@@ -6,6 +6,7 @@ import { App, Button, Card, Flex, Form, Input } from 'antd'
 import Password from 'antd/es/input/Password'
 import ky from 'ky'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 type LoginForm = {
   username: string
   password: string
@@ -16,6 +17,8 @@ export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false)
   const { message } = App.useApp()
   const login = useUserStore((state) => state.login)
+  const router = useRouter()
+
   async function userLogin(value: LoginForm) {
     const res = await ky
       .post<DataResponse<LoginResponse>>('/api/auth/login', {
@@ -25,6 +28,7 @@ export default function LoginPage() {
     if (res.code === 200) {
       message.success('登录成功')
       login(res.data)
+      router.push('/')
     } else {
       message.error(res.message)
     }
@@ -38,6 +42,7 @@ export default function LoginPage() {
     if (res.code === 200) {
       message.success('注册成功')
       login(res.data)
+      router.push('/')
     } else {
       message.error(res.message)
     }
@@ -61,6 +66,7 @@ export default function LoginPage() {
         onFinishFailed={() => {
           message.error('无效字段，请检查输入内容')
         }}
+        autoComplete="off"
       >
         <Form.Item<LoginForm>
           name="username"

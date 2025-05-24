@@ -19,7 +19,8 @@ export type CommentResponse = {
   content: string
   user: UserRelatedResponse
   project_id: number
-  parent_id?: number
+  parent_id: number | null
   created_at: string
   updated_at: string
+  replies?: CommentResponse[]
 }

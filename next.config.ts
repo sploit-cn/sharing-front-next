@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: 'http://10.144.3.200:8000/:path*',
       },
+      {
+        source: '/static/:path*',
+        destination: 'http://10.144.3.200:8000/static/:path*',
+      },
     ]
   },
   images: {

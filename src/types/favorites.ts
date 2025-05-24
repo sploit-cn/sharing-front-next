@@ -11,6 +11,7 @@ export type FavoriteUserResponse = {
   id: number
   project_id: number
   user: UserRelatedResponse
+  created_at: string
 }
 
 export type FavoriteProjectResponse = {

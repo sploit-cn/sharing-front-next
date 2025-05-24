@@ -1,5 +1,5 @@
 'use client'
-import { App, AutoComplete, Button, Flex } from 'antd'
+import { App, AutoComplete, Avatar, Button, Flex } from 'antd'
 import Search from 'antd/es/input/Search'
 import ThemeSwitcher from './ThemeSwitcher'
 import Link from 'next/link'
@@ -41,9 +41,11 @@ const HeaderButtons = () => {
       </AutoComplete>
       <ThemeSwitcher />
       {user && (
-        <Button autoInsertSpace={false} icon={<CloudUploadOutlined />}>
-          提交项目
-        </Button>
+        <Link href="/submit">
+          <Button autoInsertSpace={false} icon={<CloudUploadOutlined />}>
+            提交项目
+          </Button>
+        </Link>
       )}
       {user ? (
         <Button
@@ -68,6 +70,7 @@ const HeaderButtons = () => {
           <Button autoInsertSpace={false}>登录</Button>
         </Link>
       )}
+      {user && <Avatar size={32} src={user.avatar} alt={user.username} />}
     </Flex>
   )
 }
