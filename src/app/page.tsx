@@ -5,7 +5,7 @@ import ProjectList from '@/components/ProjectList'
 import { getBaseUrl } from '@/utils/urls'
 
 const Home = async () => {
-  const data = await fetch(`${await getBaseUrl()}/api/projects`)
+  const data = await fetch(`${getBaseUrl()}/api/projects`)
   const response = (await data.json()) as PaginatedResponse<ProjectBaseResponse>
   const projects = response.data.items
   return (

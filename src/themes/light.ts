@@ -1,7 +1,8 @@
 import { theme, type ThemeConfig } from 'antd'
 export default {
   token: {
-    // colorPrimary: '#40d18f',
+    colorPrimary: '#40d18f',
+    colorBgBase: '#ffffff',
   },
   algorithm: [theme.defaultAlgorithm],
   components: {

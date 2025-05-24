@@ -10,11 +10,9 @@ export type UserBase = {
   email: string
 }
 
-export type UserPassMixin = {
+export type UserCreate = UserBase & {
   password: string
 }
-
-export type UserCreate = UserBase & UserPassMixin
 
 export type UserUpdate = Partial<UserBase>
 
@@ -80,4 +78,10 @@ export type OAuthLogin = {
   platform: string
   code: string
   redirect_uri: string
+}
+
+export type LoginResponse = {
+  access_token: string
+  token_type: string
+  user: UserResponse
 }

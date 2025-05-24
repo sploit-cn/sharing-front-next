@@ -10,9 +10,10 @@ import { Meta } from 'antd/es/list/Item'
 import { GiteeIcon, IssuesIcon, LawIcon } from './icons'
 import IconText from './IconText'
 import { useRouter } from 'next/navigation'
-
+import useUserStore from '@/store/userStore'
 const ProjectList = ({ projects }: { projects: ProjectBaseResponse[] }) => {
   const router = useRouter()
+  const user = useUserStore((state) => state.user)
   return (
     <>
       {projects.map((project) => (
@@ -48,13 +49,18 @@ const ProjectList = ({ projects }: { projects: ProjectBaseResponse[] }) => {
           className="hover:bg-bghover active:bg-bgactive transition-colors duration-300"
           style={{
             opacity: project.is_approved ? 1 : 0.5,
+            filter: project.is_approved ? 'none' : 'grayscale(100%)',
           }}
           onClick={() => {
-            if (project.is_approved) {
-              router.push(`/projects/${project.id}`)
-            } else {
+            if (
+              !project.is_approved &&
+              user?.role !== 'admin' &&
+              user?.id !== project.submitter_id
+            ) {
               alert('项目未通过审核')
+              return
             }
+            router.push(`/projects/${project.id}`)
           }}
         >
           <Meta
