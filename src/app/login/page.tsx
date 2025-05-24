@@ -1,15 +1,22 @@
 'use client'
 import useUserStore from '@/store/userStore'
 import { DataResponse, LoginResponse } from '@/types'
-import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons'
-import { App, Button, Card, Flex, Form, Input } from 'antd'
+import {
+  LockOutlined,
+  MailOutlined,
+  UserOutlined,
+  GithubOutlined,
+} from '@ant-design/icons'
+import { App, Button, Card, Flex, Form, Input, Divider } from 'antd'
 import Password from 'antd/es/input/Password'
 import ky from 'ky'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { GiteeIcon } from '@/components/icons'
 type LoginForm = {
   username: string
   password: string
+  confirmPassword?: string
   email: string | null
 }
 export default function LoginPage() {
@@ -45,6 +52,21 @@ export default function LoginPage() {
       router.push('/')
     } else {
       message.error(res.message)
+    }
+  }
+
+  async function handleOAuthLogin(platform: 'github' | 'gitee') {
+    try {
+      const res = await ky
+        .get<DataResponse<string>>(`/api/auth/${platform}`)
+        .json()
+      if (res.code === 200) {
+        window.location.href = res.data
+      } else {
+        message.error(res.message)
+      }
+    } catch {
+      message.error(`${platform === 'github' ? 'GitHub' : 'Gitee'} 登录失败`)
     }
   }
   return (
@@ -115,6 +137,32 @@ export default function LoginPage() {
             placeholder="密码"
           />
         </Form.Item>
+        {isRegister && (
+          <Form.Item<LoginForm>
+            name="confirmPassword"
+            label="确认密码"
+            dependencies={['password']}
+            rules={[
+              {
+                required: true,
+                message: '请确认密码',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('两次输入的密码不一致'))
+                },
+              }),
+            ]}
+          >
+            <Password
+              prefix={<LockOutlined className="mr-1" />}
+              placeholder="确认密码"
+            />
+          </Form.Item>
+        )}
         <Flex justify="center" align="center" gap="middle">
           <Button
             color="blue"
@@ -143,6 +191,25 @@ export default function LoginPage() {
             }}
           >
             注册
+          </Button>
+        </Flex>
+
+        <Divider>或</Divider>
+
+        <Flex justify="center" align="center" gap="middle">
+          <Button
+            icon={<GithubOutlined />}
+            className="w-40"
+            onClick={() => handleOAuthLogin('github')}
+          >
+            GitHub 登录
+          </Button>
+          <Button
+            icon={<GiteeIcon />}
+            className="w-40"
+            onClick={() => handleOAuthLogin('gitee')}
+          >
+            Gitee 登录
           </Button>
         </Flex>
       </Form>
