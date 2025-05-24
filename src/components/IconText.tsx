@@ -1,8 +1,17 @@
 import { Space } from 'antd'
+import type { SpaceSize } from 'antd/es/space'
 import React from 'react'
 
-const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
-  <Space>
+const IconText = ({
+  icon,
+  text,
+  size = 'small',
+}: {
+  icon: React.FC
+  text: string
+  size?: SpaceSize
+}) => (
+  <Space size={size}>
     {React.createElement(icon)}
     {text}
   </Space>

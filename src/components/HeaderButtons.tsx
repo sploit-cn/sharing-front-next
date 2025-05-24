@@ -1,5 +1,5 @@
 'use client'
-import { App, AutoComplete, Avatar, Button, Flex } from 'antd'
+import { App, AutoComplete, Avatar, Button, Flex, Popover } from 'antd'
 import Search from 'antd/es/input/Search'
 import ThemeSwitcher from './ThemeSwitcher'
 import Link from 'next/link'
@@ -47,30 +47,51 @@ const HeaderButtons = () => {
           </Button>
         </Link>
       )}
-      {user ? (
-        <Button
-          autoInsertSpace={false}
-          onClick={async () => {
-            const res = await ky
-              .post<MessageResponse>('/api/auth/logout')
-              .json()
-            if (res.code === 200) {
-              message.success('登出成功')
-              logout()
-              router.push('/')
-            } else {
-              message.error(res.message)
-            }
-          }}
-        >
-          登出
-        </Button>
-      ) : (
+      {!user && (
         <Link className="flex items-center" href="/login">
           <Button autoInsertSpace={false}>登录</Button>
         </Link>
       )}
-      {user && <Avatar size={32} src={user.avatar} alt={user.username} />}
+      {user && (
+        <Popover
+          placement="bottomRight"
+          content={
+            <Flex gap="small">
+              <Link href="/profile">
+                <Button>个人中心</Button>
+              </Link>
+              <Button
+                onClick={async () => {
+                  const res = await ky
+                    .post<MessageResponse>('/api/auth/logout')
+                    .json()
+                  if (res.code === 200) {
+                    message.success('登出成功')
+                    logout()
+                    router.push('/')
+                  } else {
+                    message.error(res.message)
+                  }
+                }}
+              >
+                登出
+              </Button>
+            </Flex>
+          }
+          title={
+            <Flex gap="small">
+              <div>
+                <p>
+                  <b>{user.username}</b>
+                </p>
+                <p>{user.email}</p>
+              </div>
+            </Flex>
+          }
+        >
+          <Avatar size={32} src={user.avatar} alt={user.username} />
+        </Popover>
+      )}
     </Flex>
   )
 }

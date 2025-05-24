@@ -39,6 +39,14 @@ body {
   @apply rounded-b-xl;
 }
 
+.ant-list .ant-list-item .ant-list-item-action {
+  margin-inline-start: 12px !important;
+}
+
+.ant-list-vertical .ant-list-item .ant-list-item-action {
+  margin-inline-start: auto !important;
+}
+
 /* Project page custom styles */
 .project-card {
   @apply transition-all duration-300 hover:shadow-xl;

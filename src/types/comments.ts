@@ -5,6 +5,7 @@ export type CommentRelatedResponse = {
   content: string
   user_id: number
   project_id: number
+  created_at: string
 }
 
 export type CommentCreate = {

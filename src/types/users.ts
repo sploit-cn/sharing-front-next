@@ -14,7 +14,11 @@ export type UserCreate = UserBase & {
   password: string
 }
 
-export type UserUpdate = Partial<UserBase>
+export type UserUpdate = {
+  email?: string
+  bio?: string
+  avatar?: string
+}
 
 export type UserUpdatePassword = {
   old_password: string
