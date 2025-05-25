@@ -12,6 +12,7 @@ import { useDebounceFn } from '@reactuses/core'
 import { useRouter } from 'next/navigation'
 const HeaderButtons = () => {
   const [suggestions, setSuggestions] = useState<{ value: string }[]>([])
+  const [searchValue, setSearchValue] = useState('')
   const { message } = App.useApp()
   const router = useRouter()
   const searchForSuggest = async (value: string) => {
@@ -20,13 +21,19 @@ const HeaderButtons = () => {
         keyword: value,
       },
     }).json()
-    alert(JSON.stringify(data))
     setSuggestions(data.data.map((item) => ({ value: item })))
   }
   const { run: searchForSuggestDebounced } = useDebounceFn(
     searchForSuggest,
     1000,
   )
+  const handleSearch = (value: string) => {
+    if (value.trim()) {
+      router.push(`/search?keyword=${encodeURIComponent(value.trim())}`)
+    } else {
+      router.push('/search')
+    }
+  }
   const user = useUserStore((state) => state.user)
   const logout = useUserStore((state) => state.logout)
   return (
@@ -34,10 +41,19 @@ const HeaderButtons = () => {
       <AutoComplete
         className="w-36"
         options={suggestions}
-        onSearch={searchForSuggestDebounced}
+        onSearch={(text) => {
+          searchForSuggestDebounced(text)
+          setSearchValue(text)
+        }}
+        onSelect={(value) => {
+          setSearchValue(value)
+          handleSearch(value)
+        }}
         placeholder="搜索开源项目"
+        value={searchValue}
+        onChange={(text) => setSearchValue(text)}
       >
-        <Search />
+        <Search onSearch={handleSearch} />
       </AutoComplete>
       <ThemeSwitcher />
       {user && (

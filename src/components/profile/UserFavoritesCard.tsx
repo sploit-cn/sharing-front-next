@@ -135,10 +135,7 @@ const UserFavoritesCard: React.FC<UserFavoritesCardProps> = ({ userId }) => {
                   }
                   description={
                     <div className="space-y-2">
-                      <Text
-                        ellipsis={{ rows: 1 }}
-                        className="text-sm text-gray-600"
-                      >
+                      <Text ellipsis className="text-sm text-gray-600">
                         {favorite.project.brief}
                       </Text>
                       <div className="flex items-center justify-between">

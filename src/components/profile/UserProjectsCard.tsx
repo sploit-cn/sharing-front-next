@@ -112,10 +112,7 @@ const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
                   }
                   description={
                     <div className="space-y-2">
-                      <Text
-                        ellipsis={{ rows: 1 }}
-                        className="text-sm text-gray-600"
-                      >
+                      <Text ellipsis className="text-sm text-gray-600">
                         {project.brief}
                       </Text>
                       <div className="flex items-center gap-2 text-xs text-gray-500">
