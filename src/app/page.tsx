@@ -1,98 +1,54 @@
-'use client'
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { List, Spin, Typography } from 'antd'
+import React from 'react'
+import { Typography } from 'antd'
 import { PaginatedResponse, ProjectBaseResponse } from '@/types'
-import ProjectList from '@/components/ProjectList'
+import { getBaseUrl } from '@/utils/urls' // Assuming getBaseUrl is still needed for server-side fetch
+import ProjectsClientRenderer from '@/components/ProjectsClientRenderer'
 
-const HomePage = () => {
-  const [projects, setProjects] = useState<ProjectBaseResponse[]>([])
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [loading, setLoading] = useState<boolean>(false)
-  const [hasMore, setHasMore] = useState<boolean>(true)
-  const [initialLoad, setInitialLoad] = useState<boolean>(true)
-  const observer = useRef<IntersectionObserver | null>(null)
-  const loaderRef = useRef<HTMLDivElement | null>(null)
+// Client-side component for rendering the list and handling infinite scroll
 
-  const fetchProjects = useCallback(
-    async (page: number) => {
-      if (loading || !hasMore) return
-      setLoading(true)
-      try {
-        const response = await fetch(
-          `/api/projects?page=${page}&page_size=10&order_by=updated_at&order=desc`,
-        )
-        if (!response.ok) {
-          throw new Error('Failed to fetch projects')
-        }
-        const data =
-          (await response.json()) as PaginatedResponse<ProjectBaseResponse>
-        setProjects((prevProjects) =>
-          page === 1 ? data.data.items : [...prevProjects, ...data.data.items],
-        )
-        setCurrentPage(data.data.page)
-        setHasMore(data.data.page < data.data.pages)
-        if (page === 1) setInitialLoad(false)
-      } catch (error) {
-        console.error('Error fetching projects:', error)
-        // Optionally, handle error state in UI
-        setHasMore(false) // Stop trying if there's an error
-      } finally {
-        setLoading(false)
-      }
-    },
-    [loading, hasMore],
-  )
+// Server component for initial data fetching and rendering ProjectsClientRenderer
+const HomePage = async () => {
+  let initialProjects: ProjectBaseResponse[] = []
+  let initialCurrentPage = 1
+  let initialTotalPages = 1
+  let fetchError = false
 
-  useEffect(() => {
-    fetchProjects(1) // Load initial data
-  }, [fetchProjects]) // fetchProjects is stable due to useCallback
-
-  useEffect(() => {
-    if (loading || initialLoad || !hasMore) return
-
-    const currentLoaderRef = loaderRef.current
-    if (observer.current) observer.current.disconnect()
-
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
-        fetchProjects(currentPage + 1)
-      }
-    })
-
-    if (currentLoaderRef) {
-      observer.current.observe(currentLoaderRef)
+  try {
+    // Fetch the first page of projects on the server
+    const response = await fetch(
+      `${getBaseUrl()}/api/projects?page=1&page_size=10&order_by=updated_at&order=desc`,
+      { cache: 'no-store' },
+    )
+    if (!response.ok) {
+      throw new Error('Failed to fetch initial projects')
     }
-
-    return () => {
-      if (observer.current && currentLoaderRef) {
-        observer.current.unobserve(currentLoaderRef)
-      }
-    }
-  }, [loading, hasMore, fetchProjects, currentPage, initialLoad])
+    const data =
+      (await response.json()) as PaginatedResponse<ProjectBaseResponse>
+    initialProjects = data.data.items
+    initialCurrentPage = data.data.page
+    initialTotalPages = data.data.pages
+  } catch (error) {
+    console.error('Error fetching initial projects for SSR:', error)
+    fetchError = true
+    // initialProjects will remain empty, currentPage and totalPages will be default
+  }
 
   return (
     <div className="w-dvw p-8">
-      {initialLoad && loading ? (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
-          <Spin size="large" />
-        </div>
-      ) : projects.length === 0 && !hasMore ? (
+      {fetchError && initialProjects.length === 0 ? (
         <Typography.Text
-          style={{ display: 'block', textAlign: 'center', margin: '20px 0' }}
+          style={{ display: 'block', textAlign: 'center', margin: '10px 0' }}
+          type="danger"
         >
-          没有找到项目。
+          加载初始项目失败，请稍后重试。
         </Typography.Text>
       ) : (
-        <List itemLayout="vertical" bordered>
-          <ProjectList projects={projects} />
-        </List>
+        <ProjectsClientRenderer
+          initialProjects={initialProjects}
+          initialCurrentPage={initialCurrentPage}
+          initialTotalPages={initialTotalPages}
+        />
       )}
-      <div ref={loaderRef} style={{ height: '50px', textAlign: 'center' }}>
-        {loading && !initialLoad && <Spin tip="加载中..." />}
-        {!loading && !hasMore && projects.length > 0 && (
-          <Typography.Text type="secondary">没有更多了</Typography.Text>
-        )}
-      </div>
     </div>
   )
 }
