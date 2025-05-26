@@ -10,3 +10,12 @@ export type NotificationResponse = {
   related_project?: ProjectRelatedResponse
   related_comment?: CommentRelatedResponse
 }
+
+export type NotificationBroadcastCreate = {
+  content: string
+}
+
+export type NotificationUserCreate = {
+  user_id: number
+  content: string
+}

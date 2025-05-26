@@ -44,7 +44,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
             {children}
           </Content>
           <Footer className="border-t-bgactive! flex items-center justify-center border-t-1">
-            OpenSource Sharing ©2025 Created by Sploit-cn
+            OpenSource Sharing ©2025 Created by CCZU wsh
           </Footer>
         </Layout>
       </AntdProvider>

@@ -7,8 +7,6 @@ import {
   ProjectOutlined,
   StarOutlined,
   EyeOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
   GithubOutlined,
 } from '@ant-design/icons'
 import type { DataResponse, ProjectBaseResponse } from '@/types'
@@ -19,21 +17,17 @@ import { GiteeIcon, LawIcon } from '../icons'
 import IconText from '../IconText'
 const { Text } = Typography
 
-interface UserProjectsCardProps {
-  userId: number
-}
-
-const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
+const UnapprovedProjectsCard: React.FC = () => {
   const [projects, setProjects] = useState<ProjectBaseResponse[]>([])
   const [loading, setLoading] = useState(true)
   const { message } = App.useApp()
   const router = useRouter()
 
   useEffect(() => {
-    const fetchUserProjects = async () => {
+    const fetchUnapprovedProjects = async () => {
       try {
         const response = await ky
-          .get('/api/projects/my')
+          .get('/api/projects/unapproved')
           .json<DataResponse<ProjectBaseResponse[]>>()
         if (response.code === 200) {
           setProjects(response.data)
@@ -41,42 +35,21 @@ const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
           message.error(response.message)
         }
       } catch {
-        message.error('获取项目列表失败')
+        message.error('获取未审核项目列表失败')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchUserProjects()
-  }, [userId, message])
-
-  const getStatusIcon = (isApproved: boolean) => {
-    if (isApproved) {
-      return <CheckCircleOutlined className="text-green-500" />
-    }
-    return <ClockCircleOutlined className="text-orange-500" />
-  }
-
-  const getStatusText = (isApproved: boolean | null) => {
-    if (isApproved === null) {
-      return '审核中'
-    }
-    return isApproved ? '已审核' : '已拒绝'
-  }
-
-  const getStatusColor = (isApproved: boolean | null) => {
-    if (isApproved === null) {
-      return 'orange'
-    }
-    return isApproved ? 'green' : 'red'
-  }
+    fetchUnapprovedProjects()
+  }, [message])
 
   return (
     <Card
       title={
         <div className="flex items-center gap-2">
           <ProjectOutlined />
-          <span>我的项目 ({projects.length})</span>
+          <span>未审核项目 ({projects.length})</span>
         </div>
       }
       className="h-fit"
@@ -84,7 +57,7 @@ const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
       <Spin spinning={loading}>
         {projects.length === 0 ? (
           <Empty
-            description="暂无提交的项目"
+            description="暂无未审核的项目"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         ) : (
@@ -108,12 +81,7 @@ const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
                       <Text strong className="text-base">
                         {project.name}
                       </Text>
-                      <Tag
-                        color={getStatusColor(project.is_approved)}
-                        icon={getStatusIcon(project.is_approved)}
-                      >
-                        {getStatusText(project.is_approved)}
-                      </Tag>
+                      <Tag color="orange">待审核</Tag>
                     </div>
                   }
                   description={
@@ -122,27 +90,6 @@ const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
                         {project.brief}
                       </Text>
                       <div className="flex items-center gap-2 text-xs text-gray-500">
-                        {/* <div className="flex items-center gap-1">
-                          <StarOutlined />
-                          <span>{formatNumber(project.stars)}</span>
-                        </div> */}
-                        {/* <div className="flex items-center gap-1">
-                          <Rate
-                            disabled
-                            value={project.average_rating / 2}
-                            allowHalf
-                            className="text-xs"
-                          />
-                          <span>({project.rating_count})</span>
-                        </div> */}
-                        {/* <div className="flex items-center gap-1">
-                          <StarOutlined />
-                          <span>{formatNumber(project.view_count)}</span>
-                        </div> */}
-                        {/* <div className="flex items-center gap-1">
-                          <EyeOutlined />
-                          <span>{project.view_count}</span>
-                        </div> */}
                         <IconText
                           icon={
                             project.platform == 'GitHub'
@@ -184,4 +131,4 @@ const UserProjectsCard: React.FC<UserProjectsCardProps> = ({ userId }) => {
   )
 }
 
-export default UserProjectsCard
+export default UnapprovedProjectsCard

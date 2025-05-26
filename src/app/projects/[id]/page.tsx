@@ -44,6 +44,7 @@ import Paragraph from 'antd/es/typography/Paragraph'
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import CodeBlock from '@/components/CodeBlock'
+import ProjectStatusControl from '@/components/project/ProjectStatusControl'
 export async function generateMetadata({
   params,
 }: {
@@ -158,7 +159,7 @@ export default async function Page({
                   </Badge.Ribbon>
                 )}
                 {project.is_approved && (
-                  <SafetyCertificateOutlined className="text-xl text-green-500" />
+                  <SafetyCertificateOutlined className="text-xl text-green-500!" />
                 )}
               </div>
 
@@ -363,6 +364,9 @@ export default async function Page({
           {/* 侧边栏信息 */}
           <Col xs={24} lg={8} className="order-2 lg:order-2">
             <Space direction="vertical" size="large" className="w-full">
+              <Card title="项目状态" className="project-card w-full">
+                <ProjectStatusControl project={project} />
+              </Card>
               {/* 提交者信息 */}
               {/* <Card title="项目图片" className="project-card"> */}
               {/* <div className="mb-4 flex items-center gap-3">

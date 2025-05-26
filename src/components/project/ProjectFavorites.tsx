@@ -129,6 +129,8 @@ const ProjectFavorites: React.FC<ProjectFavoritesProps> = ({
           </div>
           {currentUserId && (
             <Button
+              color="pink"
+              variant={isFavorited ? 'outlined' : 'solid'}
               type={isFavorited ? 'default' : 'primary'}
               icon={isFavorited ? <HeartFilled /> : <HeartOutlined />}
               loading={favoriting}

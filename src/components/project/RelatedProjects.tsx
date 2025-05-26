@@ -171,7 +171,7 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
                         {project.name}
                       </Text>
                       {project.is_approved && (
-                        <SafetyCertificateOutlined className="flex-shrink-0 text-green-500" />
+                        <SafetyCertificateOutlined className="flex-shrink-0 text-green-500!" />
                       )}
                     </div>
 

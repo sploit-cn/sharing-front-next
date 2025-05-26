@@ -24,18 +24,21 @@ import {
   LockOutlined,
   StopOutlined,
   CheckOutlined,
+  NotificationOutlined,
 } from '@ant-design/icons'
 import {
   type UserResponse,
   type UserUpdateByAdmin,
   type AdminUpdatePassword,
   type DataResponse,
-  MessageResponse,
+  type MessageResponse,
+  type NotificationUserCreate,
 } from '@/types'
 import ky from 'ky'
 import type { ColumnsType } from 'antd/es/table'
 
 const { Option } = Select
+const { TextArea } = Input
 
 type AdminUserManagementProps = object
 
@@ -44,12 +47,14 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
   const [loading, setLoading] = useState(true)
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [passwordModalVisible, setPasswordModalVisible] = useState(false)
+  const [notifyModalVisible, setNotifyModalVisible] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null)
   const [actionLoading, setActionLoading] = useState<number | null>(null)
   const { message } = App.useApp()
 
   const [editForm] = Form.useForm<UserUpdateByAdmin>()
   const [passwordForm] = Form.useForm<AdminUpdatePassword>()
+  const [notifyForm] = Form.useForm<{ content: string }>()
 
   useEffect(() => {
     fetchUsers()
@@ -158,6 +163,37 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
     }
   }
 
+  const handleOpenNotifyModal = (user: UserResponse) => {
+    setSelectedUser(user)
+    notifyForm.resetFields()
+    setNotifyModalVisible(true)
+  }
+
+  const handleSendNotification = async (values: { content: string }) => {
+    if (!selectedUser) return
+    setActionLoading(selectedUser.id)
+    try {
+      const requestBody: NotificationUserCreate = {
+        user_id: selectedUser.id,
+        content: values.content,
+      }
+      const response = await ky
+        .post('/api/notifications/user', { json: requestBody })
+        .json<MessageResponse>()
+
+      if (response.code === 200) {
+        message.success(`已向 ${selectedUser.username} 发送通知`)
+        setNotifyModalVisible(false)
+      } else {
+        message.error(response.message || '发送通知失败')
+      }
+    } catch {
+      message.error('发送通知失败')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('zh-CN')
   }
@@ -168,7 +204,13 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
       key: 'user',
       render: (_, user) => (
         <div className="flex items-center gap-3">
-          <Avatar src={user.avatar} icon={<UserOutlined />} size={40} />
+          <Avatar
+            src={user.avatar}
+            icon={<UserOutlined />}
+            size={40}
+            className="cursor-pointer"
+            onClick={() => handleOpenNotifyModal(user)}
+          />
           <div>
             <Flex gap={8}>
               <div className="font-medium">{user.username}</div>
@@ -191,14 +233,6 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
         </Tag>
       ),
     },
-    // {
-    //   title: '状态',
-    //   dataIndex: 'in_use',
-    //   key: 'in_use',
-    //   render: (inUse: boolean) => (
-    //     <Tag color={inUse ? 'green' : 'red'}>{inUse ? '正常' : '已禁用'}</Tag>
-    //   ),
-    // },
     {
       title: '注册时间',
       dataIndex: 'created_at',
@@ -232,6 +266,14 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
           >
             改密
           </Button>
+          <Button
+            type="text"
+            size="small"
+            icon={<NotificationOutlined />}
+            onClick={() => handleOpenNotifyModal(user)}
+          >
+            通知
+          </Button>
           <Popconfirm
             title={`确认${user.in_use ? '禁用' : '启用'}该用户？`}
             onConfirm={() => handleToggleUserStatus(user)}
@@ -241,7 +283,12 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
             <Button
               type="text"
               size="small"
-              loading={actionLoading === user.id}
+              loading={
+                actionLoading === user.id &&
+                !notifyModalVisible &&
+                !editModalVisible &&
+                !passwordModalVisible
+              }
               icon={user.in_use ? <StopOutlined /> : <CheckOutlined />}
               className={user.in_use ? 'text-red-500' : 'text-green-500'}
             >
@@ -254,127 +301,81 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
   ]
 
   return (
-    <>
-      <Card
-        title={
-          <div className="flex items-center gap-2">
-            <UserOutlined />
-            <span>用户管理</span>
-          </div>
-        }
-      >
-        <Table
-          columns={columns}
-          dataSource={users}
-          rowKey="id"
-          loading={loading}
-          className="pr-8"
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total) => `共 ${total} 个用户`,
-          }}
-        />
-      </Card>
+    <Card title="用户管理" className="h-full">
+      <Table
+        columns={columns}
+        dataSource={users}
+        loading={loading}
+        rowKey="id"
+        scroll={{ x: 'max-content' }}
+        pagination={{ pageSize: 10 }}
+      />
 
-      {/* Edit User Modal */}
       <Modal
-        title={<p className="text-xl!">编辑用户信息</p>}
+        title="编辑用户信息"
         open={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
         footer={null}
-        destroyOnHidden
+        destroyOnClose
       >
-        <Form
-          form={editForm}
-          layout="vertical"
-          onFinish={handleSaveUser}
-          className="mt-8!"
-        >
-          <Form.Item
-            name="email"
-            label="邮箱"
-            rules={[
-              { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '请输入有效的邮箱地址' },
-            ]}
-          >
-            <Input placeholder="请输入邮箱" />
+        <Form form={editForm} layout="vertical" onFinish={handleSaveUser}>
+          <Form.Item name="email" label="邮箱" rules={[{ type: 'email' }]}>
+            <Input />
           </Form.Item>
-
-          <Form.Item
-            name="bio"
-            label="个人简介"
-            rules={[{ max: 200, message: '个人简介不能超过200个字符' }]}
-          >
-            <Input.TextArea
-              rows={3}
-              placeholder="请输入个人简介"
-              showCount
-              maxLength={200}
-              autoSize={{ minRows: 2, maxRows: 6 }}
-            />
+          <Form.Item name="bio" label="简介">
+            <Input.TextArea rows={3} />
           </Form.Item>
-
-          <Form.Item
-            name="role"
-            label="角色"
-            rules={[{ required: true, message: '请选择角色' }]}
-          >
-            <Select placeholder="请选择角色">
-              <Option value="user">普通用户</Option>
+          <Form.Item name="role" label="角色" rules={[{ required: true }]}>
+            <Select>
+              <Option value="user">用户</Option>
               <Option value="admin">管理员</Option>
             </Select>
           </Form.Item>
-
-          <Form.Item name="in_use" label="账号状态" valuePropName="checked">
+          <Form.Item name="in_use" label="状态" valuePropName="checked">
             <Switch checkedChildren="启用" unCheckedChildren="禁用" />
           </Form.Item>
-
-          <div className="flex justify-end gap-2">
-            <Button onClick={() => setEditModalVisible(false)}>取消</Button>
+          <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
-              loading={actionLoading === selectedUser?.id}
+              loading={actionLoading === selectedUser?.id && editModalVisible}
             >
-              保存
+              保存更改
             </Button>
-          </div>
+          </Form.Item>
         </Form>
       </Modal>
 
-      {/* Change Password Modal */}
       <Modal
-        title={`修改用户密码 - ${selectedUser?.username}`}
+        title="修改用户密码"
         open={passwordModalVisible}
         onCancel={() => setPasswordModalVisible(false)}
         footer={null}
-        destroyOnHidden
+        destroyOnClose
       >
         <Form
           form={passwordForm}
           layout="vertical"
           onFinish={handleSavePassword}
-          className="mt-4"
         >
           <Form.Item
             name="new_password"
             label="新密码"
             rules={[
               { required: true, message: '请输入新密码' },
-              { min: 6, message: '密码长度至少6位' },
+              { min: 6, message: '密码至少6位' },
             ]}
+            hasFeedback
           >
-            <Input.Password placeholder="请输入新密码" />
+            <Input.Password />
           </Form.Item>
-
           <Form.Item
             name="confirm_password"
             label="确认新密码"
+            dependencies={['new_password']}
+            hasFeedback
             rules={[
-              { required: true, message: '请确认新密码' },
+              { required: true, message: '请再次输入新密码' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('new_password') === value) {
@@ -385,22 +386,50 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
               }),
             ]}
           >
-            <Input.Password placeholder="请再次输入新密码" />
+            <Input.Password />
           </Form.Item>
-
-          <div className="flex justify-end gap-2">
-            <Button onClick={() => setPasswordModalVisible(false)}>取消</Button>
+          <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
-              loading={actionLoading === selectedUser?.id}
+              loading={
+                actionLoading === selectedUser?.id && passwordModalVisible
+              }
             >
               确认修改
             </Button>
-          </div>
+          </Form.Item>
         </Form>
       </Modal>
-    </>
+
+      <Modal
+        title={`向 ${selectedUser?.username || '用户'} 发送通知`}
+        open={notifyModalVisible}
+        onCancel={() => setNotifyModalVisible(false)}
+        onOk={() => notifyForm.submit()}
+        confirmLoading={
+          actionLoading === selectedUser?.id && notifyModalVisible
+        }
+        destroyOnClose
+      >
+        <Form
+          form={notifyForm}
+          layout="vertical"
+          onFinish={handleSendNotification}
+        >
+          <Form.Item
+            name="content"
+            label="通知内容"
+            rules={[{ required: true, message: '请输入通知内容' }]}
+          >
+            <TextArea
+              rows={4}
+              placeholder={`输入要发送给 ${selectedUser?.username || '该用户'} 的通知内容`}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Card>
   )
 }
 

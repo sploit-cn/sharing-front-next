@@ -274,14 +274,19 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
                     <Text strong>审核状态：</Text>
                     <Tag
                       color={
-                        selectedNotification.related_project.is_approved
-                          ? 'green'
-                          : 'orange'
+                        selectedNotification.related_project.is_approved ===
+                        null
+                          ? 'orange'
+                          : selectedNotification.related_project.is_approved
+                            ? 'green'
+                            : 'red'
                       }
                     >
-                      {selectedNotification.related_project.is_approved
-                        ? '已审核'
-                        : '待审核'}
+                      {selectedNotification.related_project.is_approved === null
+                        ? '未审核'
+                        : selectedNotification.related_project.is_approved
+                          ? '已审核'
+                          : '已拒绝'}
                     </Tag>
                   </div>
                   <Button

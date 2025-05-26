@@ -9,6 +9,8 @@ import UserProjectsCard from '@/components/profile/UserProjectsCard'
 import UserFavoritesCard from '@/components/profile/UserFavoritesCard'
 import UserNotificationsCard from '@/components/profile/UserNotificationsCard'
 import AdminUserManagement from '@/components/profile/AdminUserManagement'
+import UnapprovedProjectsCard from '@/components/profile/UnapprovedProjectsCard'
+import TagManagementCard from '@/components/profile/TagManagementCard'
 import { useHydrated } from '@/utils/useHydrated'
 import { HomeOutlined } from '@ant-design/icons'
 
@@ -26,9 +28,9 @@ export default function ProfilePage() {
       return
     }
     setLoading(false)
-  }, [user, router, message])
+  }, [user, router, message, isHydrated])
 
-  if (loading) {
+  if (loading || !isHydrated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spin size="large" />
@@ -75,9 +77,21 @@ export default function ProfilePage() {
                 <Col xs={24} xl={12}>
                   <UserProjectsCard userId={user.id} />
                 </Col>
+
                 <Col xs={24} xl={12}>
                   <UserFavoritesCard userId={user.id} />
                 </Col>
+                {user.role === 'admin' && (
+                  <Col xs={24} xl={12}>
+                    <UnapprovedProjectsCard />
+                  </Col>
+                )}
+                {/* Tag Management for Admin */}
+                {user.role === 'admin' && (
+                  <Col xs={24} xl={12}>
+                    <TagManagementCard />
+                  </Col>
+                )}
               </Row>
 
               {/* Bottom Section - Notifications */}

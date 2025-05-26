@@ -89,6 +89,7 @@ const ProjectSubmitPage: React.FC = () => {
         const response = await ky
           .get('/api/tags')
           .json<DataResponse<TagResponse[]>>()
+        await ky.delete('/api/images/clean')
         setTags(response.data)
       } catch {
         message.error('获取标签列表失败')
@@ -247,8 +248,8 @@ const ProjectSubmitPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen py-8">
-      <div className="mx-auto max-w-6xl space-y-4! px-4">
+    <div className="min-h-screen py-4">
+      <div className="mx-auto max-w-7xl space-y-4! px-4">
         {/* Breadcrumb */}
         <Breadcrumb
           className="mb-6"
@@ -336,13 +337,13 @@ const ProjectSubmitPage: React.FC = () => {
               <Input
                 placeholder="https://github.com/username/repository 或 https://gitee.com/username/repository"
                 onChange={(e) => handleRepoUrlChange(e.target.value)}
-                suffix={repoLoading && <Spin size="small" />}
+                suffix={repoLoading ? <Spin size="small" /> : <span />}
               />
             </Form.Item>
 
             {/* Repository Details */}
             {repoDetail && (
-              <Card className="mb-6 border-green-200 bg-green-50">
+              <Card className="mb-4!">
                 <div className="flex items-center gap-4">
                   <img
                     src={repoDetail.avatar || '/placeholder.svg'}
@@ -461,7 +462,7 @@ const ProjectSubmitPage: React.FC = () => {
                 </span>
               }
             >
-              <div className="space-y-4">
+              <div className="space-y-4!">
                 <Upload
                   listType="picture-card"
                   beforeUpload={(file) => {
@@ -493,13 +494,13 @@ const ProjectSubmitPage: React.FC = () => {
                         <img
                           src={`/static/images/${image.file_name}`}
                           alt={image.original_name}
-                          className="h-24 w-full rounded-lg border object-cover"
+                          className="border-bgactive h-24 w-full rounded-lg border object-cover"
                         />
                         <Button
                           type="text"
                           danger
                           icon={<DeleteOutlined />}
-                          className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100"
+                          className="absolute top-2 opacity-0 transition-opacity group-hover:opacity-100"
                           onClick={() => handleImageRemove(image)}
                         />
                       </div>
