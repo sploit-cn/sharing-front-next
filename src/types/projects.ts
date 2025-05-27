@@ -104,7 +104,7 @@ export type ProjectOrderFields =
   | 'repo_id'
 
 export type ProjectPaginationParams = PaginationParams & {
-  order_by: ProjectOrderFields
+  order_by?: ProjectOrderFields
   order: Order
   ids?: number[]
 }

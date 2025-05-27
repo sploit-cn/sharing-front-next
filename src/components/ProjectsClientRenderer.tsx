@@ -87,10 +87,7 @@ const ProjectsClientRenderer = ({
           <ProjectList projects={projects} />
         </List>
       )}
-      <div
-        ref={loaderRef}
-        style={{ height: '12px', textAlign: 'center', marginTop: '20px' }}
-      >
+      <div ref={loaderRef} className="mt-5 h-3 text-center">
         {loading && <Spin tip="加载中..." />}
         {!loading && !hasMore && projects.length > 0 && (
           <Typography.Text type="secondary">没有更多了</Typography.Text>

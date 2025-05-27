@@ -49,7 +49,7 @@ body {
 
 /* Project page custom styles */
 .project-card {
-  @apply transition-all duration-300 hover:shadow-xl;
+  @apply transition-all duration-300 hover:shadow-lg;
 }
 
 .project-stats-grid {
@@ -78,10 +78,6 @@ body {
 
 .project-code-block code {
   @apply font-mono text-sm text-gray-800;
-}
-
-.project-breadcrumb {
-  @apply rounded-lg px-4 py-2 shadow-sm;
 }
 
 .related-project-item {

@@ -11,6 +11,7 @@ import {
 import useUserStore from '@/store/userStore'
 import ky from 'ky'
 import type { ProjectFullResponse, DataResponse } from '@/types'
+import { useRouter } from 'next/navigation'
 
 const { Text } = Typography
 
@@ -27,9 +28,32 @@ const ProjectStatusControl: React.FC<ProjectStatusControlProps> = ({
   const [loadingApprove, setLoadingApprove] = useState(false)
   const [loadingReject, setLoadingReject] = useState(false)
   const [loadingFeature, setLoadingFeature] = useState(false)
+  const router = useRouter()
 
   const handleProjectUpdate = (updatedProject: ProjectFullResponse) => {
     setProject(updatedProject)
+  }
+
+  let canEdit = false
+  if (user) {
+    if (user.role === 'admin') {
+      canEdit = true
+    } else {
+      const isOwner =
+        (project.platform === 'GitHub' &&
+          user.github_id === project.owner_platform_id) ||
+        (project.platform === 'Gitee' &&
+          user.gitee_id === project.owner_platform_id)
+
+      if (isOwner) {
+        canEdit = true
+      } else if (
+        user.id === project.submitter_id &&
+        (project.is_approved === false || project.is_approved === null)
+      ) {
+        canEdit = true
+      }
+    }
   }
 
   if (!user || user.role !== 'admin') {
@@ -208,6 +232,15 @@ const ProjectStatusControl: React.FC<ProjectStatusControlProps> = ({
           loading={loadingFeature}
         />
       </Space>
+
+      {canEdit && (
+        <Button
+          onClick={() => router.push(`/update/${project.id}`)}
+          className="w-full"
+        >
+          修改项目信息
+        </Button>
+      )}
     </Space>
   )
 }

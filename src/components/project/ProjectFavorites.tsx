@@ -1,20 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import {
-  Card,
-  List,
-  Avatar,
-  Button,
-  Typography,
-  message,
-  Spin,
-  Tooltip,
-} from 'antd'
+import { Card, List, Avatar, Button, Typography, Spin, Tooltip } from 'antd'
 import { HeartOutlined, HeartFilled, UserOutlined } from '@ant-design/icons'
 import { FavoriteUserResponse } from '@/types'
 import ky from 'ky'
 import useUserStore from '@/store/userStore'
+import { App } from 'antd'
 
 const { Text } = Typography
 
@@ -27,6 +19,7 @@ const ProjectFavorites: React.FC<ProjectFavoritesProps> = ({
   projectId,
   initialFavorites = [],
 }) => {
+  const { message } = App.useApp()
   const [favorites, setFavorites] =
     useState<FavoriteUserResponse[]>(initialFavorites)
   const [loading, setLoading] = useState(false)

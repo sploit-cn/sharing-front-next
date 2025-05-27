@@ -12,12 +12,10 @@ import {
   List,
   App,
   Collapse,
-  Flex,
 } from 'antd'
 import { StarOutlined, StarFilled, UserOutlined } from '@ant-design/icons'
 import ky from 'ky'
 import useUserStore from '@/store/userStore'
-import staticMethods from 'antd/es/message'
 
 const { Title, Text } = Typography
 

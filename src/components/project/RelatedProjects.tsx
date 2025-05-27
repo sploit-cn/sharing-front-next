@@ -1,17 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import {
-  Card,
-  List,
-  Avatar,
-  Button,
-  Typography,
-  message,
-  Spin,
-  Badge,
-  Empty,
-} from 'antd'
+import { Card, List, Avatar, Button, Typography, Spin, Empty } from 'antd'
 import {
   StarOutlined,
   SafetyCertificateOutlined,
@@ -20,6 +10,7 @@ import {
 import { ProjectRelatedResponse } from '@/types'
 import ky from 'ky'
 import Link from 'next/link'
+import { App } from 'antd'
 
 const { Text } = Typography
 
@@ -40,6 +31,7 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
     ProjectRelatedResponse[]
   >([])
   const [loading, setLoading] = useState(false)
+  const { message } = App.useApp()
 
   const fetchRelatedProjects = useCallback(async () => {
     setLoading(true)
@@ -55,6 +47,8 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
       // 添加编程语言筛选
       if (programmingLanguage) {
         searchParams.set('programming_language', programmingLanguage)
+      } else {
+        searchParams.set('programming_language', 'null')
       }
 
       // 搜索相关项目
@@ -71,16 +65,15 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
 
       if (relatedIds.length > 0) {
         // 获取项目详情
+        const searchParams = new URLSearchParams({
+          page: '1',
+          page_size: limit.toString(),
+          order_by: 'stars',
+          order: 'desc',
+        })
+        relatedIds.forEach((id) => searchParams.append('ids', id.toString()))
         const projectsResponse = await ky
-          .get(
-            `/api/projects?${new URLSearchParams({
-              ids: relatedIds.join(','),
-              page: '1',
-              page_size: limit.toString(),
-              order_by: 'stars',
-              order: 'desc',
-            }).toString()}`,
-          )
+          .get(`/api/projects?${searchParams.toString()}`)
           .json<{
             data: {
               items: ProjectRelatedResponse[]

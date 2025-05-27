@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Card,
   List,
@@ -13,6 +13,8 @@ import {
   Modal,
   Tag,
   Badge,
+  Form,
+  Input,
 } from 'antd'
 import {
   BellOutlined,
@@ -21,14 +23,17 @@ import {
   LinkOutlined,
   MessageOutlined,
   ProjectOutlined,
+  NotificationOutlined,
 } from '@ant-design/icons'
 import type {
   DataResponse,
   MessageResponse,
+  NotificationBroadcastCreate,
   NotificationResponse,
 } from '@/types'
 import ky from 'ky'
 import { useRouter } from 'next/navigation'
+import useUserStore from '@/store/userStore'
 
 const { Text, Paragraph } = Typography
 
@@ -45,27 +50,44 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
   const [actionLoading, setActionLoading] = useState<number | null>(null)
   const { message } = App.useApp()
   const router = useRouter()
+  const user = useUserStore((state) => state.user)
+  const [isBroadcastModalVisible, setIsBroadcastModalVisible] = useState(false)
+  const [broadcastForm] = Form.useForm()
+  const [isSubmittingBroadcast, setIsSubmittingBroadcast] = useState(false)
+  const handleBroadcastModalOpen = () => {
+    setIsBroadcastModalVisible(true)
+  }
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await ky
-          .get('/api/notifications')
-          .json<DataResponse<NotificationResponse[]>>()
-        if (response.code === 200) {
-          setNotifications(response.data)
-        } else {
-          message.error(response.message)
-        }
-      } catch {
-        message.error('获取通知失败')
-      } finally {
-        setLoading(false)
+  const cardExtra =
+    user && user.role === 'admin' ? (
+      <Button
+        icon={<NotificationOutlined />}
+        onClick={handleBroadcastModalOpen}
+      >
+        发布公告
+      </Button>
+    ) : null
+
+  const fetchNotifications = useCallback(async () => {
+    setLoading(true)
+    try {
+      const response = await ky
+        .get('/api/notifications')
+        .json<DataResponse<NotificationResponse[]>>()
+      if (response.code === 200) {
+        setNotifications(response.data)
+      } else {
+        message.error(response.message)
       }
+    } catch {
+      message.error('获取通知列表失败')
+    } finally {
+      setLoading(false)
     }
-
-    fetchNotifications()
   }, [message])
+  useEffect(() => {
+    fetchNotifications()
+  }, [fetchNotifications])
 
   const handleViewDetails = async (notification: NotificationResponse) => {
     setSelectedNotification(notification)
@@ -131,6 +153,38 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
     return '刚刚'
   }
 
+  const handleBroadcastModalCancel = () => {
+    setIsBroadcastModalVisible(false)
+    broadcastForm.resetFields()
+  }
+
+  const handleBroadcastSubmit = async () => {
+    try {
+      setIsSubmittingBroadcast(true)
+      const values = await broadcastForm.validateFields()
+      const requestBody: NotificationBroadcastCreate = {
+        content: values.content,
+      }
+      const response = await ky
+        .post('/api/notifications/broadcast', { json: requestBody })
+        .json<MessageResponse>()
+
+      if (response.code === 200) {
+        message.success('公告发布成功')
+        setIsBroadcastModalVisible(false)
+        broadcastForm.resetFields()
+        fetchNotifications()
+      } else {
+        message.error(response.message || '发布公告失败')
+      }
+    } catch (errorInfo) {
+      console.error('Validation Failed:', errorInfo)
+      message.error('表单校验失败')
+    } finally {
+      setIsSubmittingBroadcast(false)
+    }
+  }
+
   const unreadCount = notifications.filter((n) => !n.is_read).length
 
   return (
@@ -143,6 +197,7 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
             {unreadCount > 0 && <Badge count={unreadCount} />}
           </div>
         }
+        extra={cardExtra}
         className="h-fit"
       >
         <Spin spinning={loading}>
@@ -190,10 +245,12 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
                   <List.Item.Meta
                     title={
                       <div className="flex items-center gap-2">
-                        <Text strong={!notification.is_read}>
-                          {notification.content}
-                        </Text>
-                        {/* {!notification.is_read && <Tag color="red">未读</Tag>} */}
+                        {notification.is_read && (
+                          <Text>{notification.content}</Text>
+                        )}
+                        {!notification.is_read && (
+                          <Text strong>{notification.content}</Text>
+                        )}
                       </div>
                     }
                     description={
@@ -203,7 +260,7 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
                         </Text>
                         {(notification.related_project ||
                           notification.related_comment) && (
-                          <div className="flex items-center gap-2 text-xs">
+                          <div className="mt-1 flex items-center gap-2 text-xs">
                             {notification.related_project && (
                               <Tag icon={<ProjectOutlined />} color="blue">
                                 相关项目
@@ -335,6 +392,24 @@ const UserNotificationsCard: React.FC<UserNotificationsCardProps> = () => {
             )}
           </div>
         )}
+      </Modal>
+      <Modal
+        title="发布公告"
+        open={isBroadcastModalVisible}
+        onOk={handleBroadcastSubmit}
+        onCancel={handleBroadcastModalCancel}
+        confirmLoading={isSubmittingBroadcast}
+        destroyOnHidden
+      >
+        <Form form={broadcastForm} layout="vertical" name="broadcastForm">
+          <Form.Item
+            name="content"
+            label="公告内容"
+            rules={[{ required: true, message: '请输入公告内容' }]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   )

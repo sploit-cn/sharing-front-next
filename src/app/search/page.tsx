@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import {
   Input,
   Button,
@@ -32,22 +32,25 @@ const { Option } = Select
 
 const AdvancedSearchPage = () => {
   const [form] = Form.useForm()
-  const [keyword, setKeyword] = useState<string>('')
-  const [programmingLanguage, setProgrammingLanguage] = useState<
-    string | undefined
-  >(undefined)
-  const [license, setLicense] = useState<string | undefined>(undefined)
-  const [platform, setPlatform] = useState<Platform | undefined>(undefined)
-  const [isFeatured, setIsFeatured] = useState<boolean | undefined>(undefined)
-  const [selectedTags, setSelectedTags] = useState<number[]>([])
 
+  // 搜索条件状态
+  const [searchFilters, setSearchFilters] = useState({
+    keyword: '',
+    programmingLanguage: undefined as string | undefined,
+    license: undefined as string | undefined,
+    platform: undefined as Platform | undefined,
+    isFeatured: undefined as boolean | undefined,
+    selectedTags: [] as number[],
+  })
+
+  // 排序和分页状态
   const [orderBy, setOrderBy] = useState<ProjectOrderFields>('updated_at')
   const [order, setOrder] = useState<Order>('desc')
-
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [totalItems, setTotalItems] = useState<number>(0)
 
+  // 数据状态
   const [searchResults, setSearchResults] = useState<ProjectBaseResponse[]>([])
   const [allTags, setAllTags] = useState<TagResponse[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -57,7 +60,7 @@ const AdvancedSearchPage = () => {
 
   const availableOrderByFields: { label: string; value: ProjectOrderFields }[] =
     [
-      { label: '相关度', value: 'id' }, // Placeholder, actual relevance is from /search
+      { label: '相关度', value: 'id' },
       { label: 'Star数量', value: 'stars' },
       { label: 'Issue数量', value: 'issues' },
       { label: '平均评分', value: 'average_rating' },
@@ -67,6 +70,16 @@ const AdvancedSearchPage = () => {
       { label: '更新时间', value: 'updated_at' },
       { label: '项目名称', value: 'name' },
     ]
+
+  // 优化：缓存标签选项
+  const tagOptions = useMemo(
+    () =>
+      allTags.map((tag) => ({
+        label: tag.name,
+        value: tag.id,
+      })),
+    [allTags],
+  )
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -89,39 +102,44 @@ const AdvancedSearchPage = () => {
     const searchParams = new URLSearchParams(window.location.search)
     const keyword = searchParams.get('keyword')
     if (keyword) {
-      setKeyword(keyword)
-      handleSearch(1, pageSize, keyword)
+      setSearchFilters((prev) => ({ ...prev, keyword }))
+      // 延迟执行搜索，避免初始化时的竞态条件
+      setTimeout(() => handleSearch(1, pageSize, keyword), 0)
     }
   }, [])
 
+  // 优化：减少依赖项，使用 useCallback 的 ref 模式
   const handleSearch = useCallback(
-    async (page = 1, pSize = pageSize, _keyword = '') => {
+    async (page = 1, pSize = pageSize, keywordOverride?: string) => {
       setLoading(true)
       setCurrentPage(page)
       setPageSize(pSize)
 
+      const currentFilters = {
+        ...searchFilters,
+        ...(keywordOverride !== undefined && { keyword: keywordOverride }),
+      }
+
       const searchParams: ProjectSearchParams = {
-        keyword: keyword || _keyword || undefined,
-        programming_language: programmingLanguage || undefined,
-        license: license || undefined,
-        platform: platform || undefined,
-        is_featured: isFeatured,
-        tags: selectedTags,
+        keyword: currentFilters.keyword || undefined,
+        programming_language: currentFilters.programmingLanguage || undefined,
+        license: currentFilters.license || undefined,
+        platform: currentFilters.platform || undefined,
+        is_featured: currentFilters.isFeatured,
+        tags: currentFilters.selectedTags,
       }
 
       try {
-        // Step 1: Get all matching project IDs
         let projectIdsToFetch = searchedProjectIds
-        if (searchedProjectIds === null) {
-          // Only call /search if it's a new search filter or first search
+
+        // 只有在需要新搜索时才调用 /search
+        if (searchedProjectIds === null || page === 1) {
           const searchRes = await fetch(
             `/api/projects/search?${new URLSearchParams(
               Object.entries(searchParams).reduce(
                 (acc, [key, value]) => {
                   if (value !== undefined && value !== null && value !== '') {
-                    if (Array.isArray(value)) {
-                      value.forEach((v, i) => (acc[`${key}[${i}]`] = String(v)))
-                    } else {
+                    if (!Array.isArray(value)) {
                       acc[key] = String(value)
                     }
                   }
@@ -129,8 +147,9 @@ const AdvancedSearchPage = () => {
                 },
                 {} as Record<string, string>,
               ),
-            )}`,
+            )}${searchParams.tags.length > 0 ? `&tags=${searchParams.tags.join('&tags=')}` : ''}`,
           )
+
           if (!searchRes.ok) {
             console.error('Failed to search projects')
             setSearchResults([])
@@ -139,6 +158,7 @@ const AdvancedSearchPage = () => {
             setLoading(false)
             return
           }
+
           const searchData = await searchRes.json()
           projectIdsToFetch = searchData.data || []
           setSearchedProjectIds(projectIdsToFetch)
@@ -151,17 +171,15 @@ const AdvancedSearchPage = () => {
           return
         }
 
-        // Step 2: Fetch project details for the current page using the IDs
         const paginationParams: ProjectPaginationParams = {
           page,
           page_size: pSize,
-          order_by: orderBy,
+          order_by: orderBy === 'id' ? undefined : orderBy,
           order,
           ids: projectIdsToFetch,
         }
 
         const projectsRes = await fetch(
-          // Construct query parameters carefully, especially for arrays like 'ids'
           `/api/projects?${new URLSearchParams(
             Object.entries(paginationParams).reduce((acc, [key, value]) => {
               if (key === 'ids' && Array.isArray(value)) {
@@ -191,28 +209,54 @@ const AdvancedSearchPage = () => {
         setLoading(false)
       }
     },
-    [
-      keyword,
-      programmingLanguage,
-      license,
-      platform,
-      isFeatured,
-      selectedTags,
-      orderBy,
-      order,
-      pageSize,
-      searchedProjectIds,
-    ],
+    [searchFilters, orderBy, order, pageSize, searchedProjectIds],
   )
 
-  const onFinishSearch = () => {
-    setSearchedProjectIds(null) // Reset IDs to trigger new /search call
-    handleSearch(1, pageSize)
-  }
+  // 优化：使用稳定的更新函数
+  const updateFilter = useCallback(
+    (key: keyof typeof searchFilters, value: any) => {
+      setSearchFilters((prev) => ({ ...prev, [key]: value }))
+      setSearchedProjectIds(null)
+    },
+    [],
+  )
 
-  const handleTableChange = (newPage: number, newPageSize?: number) => {
-    handleSearch(newPage, newPageSize || pageSize)
-  }
+  const onFinishSearch = useCallback(() => {
+    setSearchedProjectIds(null)
+    handleSearch(1, pageSize)
+  }, [handleSearch, pageSize])
+
+  const handleTableChange = useCallback(
+    (newPage: number, newPageSize?: number) => {
+      handleSearch(newPage, newPageSize || pageSize)
+    },
+    [handleSearch, pageSize],
+  )
+
+  // 优化：防抖输入处理
+  const handleKeywordChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      updateFilter('keyword', value)
+    },
+    [updateFilter],
+  )
+
+  const handleProgrammingLanguageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      updateFilter('programmingLanguage', value)
+    },
+    [updateFilter],
+  )
+
+  const handleLicenseChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      updateFilter('license', value)
+    },
+    [updateFilter],
+  )
 
   return (
     <div className="mx-auto px-4">
@@ -240,11 +284,8 @@ const AdvancedSearchPage = () => {
               <Form.Item label="关键词">
                 <Input
                   placeholder="搜索项目名称、简介、描述"
-                  value={keyword}
-                  onChange={(e) => {
-                    setKeyword(e.target.value)
-                    setSearchedProjectIds(null)
-                  }}
+                  value={searchFilters.keyword}
+                  onChange={handleKeywordChange}
                 />
               </Form.Item>
             </Col>
@@ -252,11 +293,8 @@ const AdvancedSearchPage = () => {
               <Form.Item label="平台">
                 <Select
                   placeholder="选择平台"
-                  value={platform}
-                  onChange={(value) => {
-                    setPlatform(value)
-                    setSearchedProjectIds(null)
-                  }}
+                  value={searchFilters.platform}
+                  onChange={(value) => updateFilter('platform', value)}
                   allowClear
                 >
                   <Option value={Platform.GITHUB}>GitHub</Option>
@@ -268,11 +306,8 @@ const AdvancedSearchPage = () => {
               <Form.Item label="编程语言">
                 <Input
                   placeholder="例如：Python, JavaScript"
-                  value={programmingLanguage}
-                  onChange={(e) => {
-                    setProgrammingLanguage(e.target.value)
-                    setSearchedProjectIds(null)
-                  }}
+                  value={searchFilters.programmingLanguage}
+                  onChange={handleProgrammingLanguageChange}
                 />
               </Form.Item>
             </Col>
@@ -280,11 +315,8 @@ const AdvancedSearchPage = () => {
               <Form.Item label="许可证">
                 <Input
                   placeholder="例如：MIT, Apache-2.0"
-                  value={license}
-                  onChange={(e) => {
-                    setLicense(e.target.value)
-                    setSearchedProjectIds(null)
-                  }}
+                  value={searchFilters.license}
+                  onChange={handleLicenseChange}
                 />
               </Form.Item>
             </Col>
@@ -293,29 +325,18 @@ const AdvancedSearchPage = () => {
                 <Select
                   mode="multiple"
                   placeholder="选择标签"
-                  value={selectedTags}
-                  onChange={(values) => {
-                    setSelectedTags(values)
-                    setSearchedProjectIds(null)
-                  }}
-                  options={allTags.map((tag) => ({
-                    label: tag.name,
-                    value: tag.id,
-                  }))}
+                  value={searchFilters.selectedTags}
+                  onChange={(values) => updateFilter('selectedTags', values)}
+                  options={tagOptions}
                   loading={allTags.length === 0}
                 />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item label=" ">
-                {' '}
-                {/* For alignment with checkbox */}
                 <Checkbox
-                  checked={isFeatured}
-                  onChange={(e) => {
-                    setIsFeatured(e.target.checked)
-                    setSearchedProjectIds(null)
-                  }}
+                  checked={searchFilters.isFeatured}
+                  onChange={(e) => updateFilter('isFeatured', e.target.checked)}
                 >
                   仅显示精选项目
                 </Checkbox>

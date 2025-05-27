@@ -11,6 +11,7 @@ import { GiteeIcon, IssuesIcon, LawIcon } from './icons'
 import IconText from './IconText'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/store/userStore'
+import Ribbon from 'antd/es/badge/Ribbon'
 const ProjectListItem = ({ project }: { project: ProjectBaseResponse }) => {
   const router = useRouter()
   return (
@@ -72,6 +73,13 @@ const ProjectList = ({ projects }: { projects: ProjectBaseResponse[] }) => {
           user?.id !== project.submitter_id
         ) {
           return null
+        }
+        if (project.is_featured) {
+          return (
+            <Ribbon text="精选" color="gold" key={project.id}>
+              <ProjectListItem project={project} />
+            </Ribbon>
+          )
         }
         return <ProjectListItem project={project} key={project.id} />
       })}

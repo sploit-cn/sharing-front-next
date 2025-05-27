@@ -194,13 +194,11 @@ function buildCommentTree(comments: CommentResponse[]) {
   // 创建一个映射，便于通过 id 快速查找评论
   const commentMap: Record<number, CommentResponse> = {}
   const tree: CommentResponse[] = []
-
   // 首先将所有评论存入 map
   comments.forEach((comment) => {
     comment.replies = [] // 初始化 replies 数组
     commentMap[comment.id] = comment
   })
-
   // 遍历评论，根据 parent_id 构建树结构
   comments.forEach((comment) => {
     if (comment.parent_id === null) {

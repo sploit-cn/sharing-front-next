@@ -316,7 +316,6 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
         open={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
         footer={null}
-        destroyOnClose
       >
         <Form form={editForm} layout="vertical" onFinish={handleSaveUser}>
           <Form.Item name="email" label="邮箱" rules={[{ type: 'email' }]}>
@@ -351,7 +350,6 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
         open={passwordModalVisible}
         onCancel={() => setPasswordModalVisible(false)}
         footer={null}
-        destroyOnClose
       >
         <Form
           form={passwordForm}
@@ -410,7 +408,6 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
         confirmLoading={
           actionLoading === selectedUser?.id && notifyModalVisible
         }
-        destroyOnClose
       >
         <Form
           form={notifyForm}

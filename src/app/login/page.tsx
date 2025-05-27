@@ -93,16 +93,20 @@ export default function LoginPage() {
         <Form.Item<LoginForm>
           name="username"
           label="用户名"
-          rules={[
-            {
-              required: true,
-              message: '请输入合法的用户名',
-              min: 3,
-              max: 20,
-              pattern: /^[a-zA-Z0-9\-_]+$/,
-              type: 'string',
-            },
-          ]}
+          rules={
+            isRegister
+              ? [
+                  {
+                    required: true,
+                    message: '请输入合法的用户名',
+                    min: 3,
+                    max: 20,
+                    pattern: /^[a-zA-Z0-9\-_]+$/,
+                    type: 'string',
+                  },
+                ]
+              : []
+          }
         >
           <Input
             prefix={<UserOutlined className="mr-1" />}
@@ -130,7 +134,11 @@ export default function LoginPage() {
         <Form.Item<LoginForm>
           name="password"
           label="密　码"
-          rules={[{ required: true, message: '请输入密码，至少6位', min: 6 }]}
+          rules={
+            isRegister
+              ? [{ required: true, message: '请输入密码，至少6位', min: 6 }]
+              : []
+          }
         >
           <Password
             prefix={<LockOutlined className="mr-1" />}

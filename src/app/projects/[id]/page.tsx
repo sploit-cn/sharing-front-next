@@ -15,7 +15,6 @@ import {
   Row,
   Col,
   Rate,
-  Badge,
   Breadcrumb,
 } from 'antd'
 import {
@@ -37,6 +36,7 @@ import ProjectComments from '@/components/project/ProjectComments'
 import ProjectFavorites from '@/components/project/ProjectFavorites'
 import ProjectRating from '@/components/project/ProjectRating'
 import RelatedProjects from '@/components/project/RelatedProjects'
+import Ribbon from 'antd/es/badge/Ribbon'
 
 import Title from 'antd/es/typography/Title'
 import Text from 'antd/es/typography/Text'
@@ -117,12 +117,129 @@ export default async function Page({
     return platform === 'GitHub' ? '#000000' : '#C71D23'
   }
 
+  const HeaderCard = () => (
+    <Card className="project-card">
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
+        <Avatar
+          size={{ xs: 60, sm: 70, md: 80, lg: 90, xl: 100, xxl: 120 }}
+          src={project.avatar}
+          icon={<CodeOutlined />}
+          className="project-avatar mx-auto border-2 border-gray-200 sm:mx-0"
+        />
+        <div className="w-full flex-1">
+          <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+            <Title level={2} className="project-title !mb-0">
+              {project.name}
+            </Title>
+            {/* {project.is_featured && (
+            <Ribbon text="精选" color="gold">
+              <div></div>
+            </Ribbon>
+          )} */}
+            {project.is_approved && (
+              <SafetyCertificateOutlined className="text-xl text-green-500!" />
+            )}
+          </div>
+          <Text className="project-brief mb-4 block text-lg text-gray-600">
+            {project.brief}
+          </Text>
+          <div className="mb-4 flex flex-wrap">
+            <Tag color={getPlatformColor(project.platform)}>
+              {project.platform}
+            </Tag>
+            {project.programming_language && (
+              <Tag color="blue">{project.programming_language}</Tag>
+            )}
+            {project.license && <Tag color="green">{project.license}</Tag>}
+            {project.tags.map((tag) => (
+              <Tag key={tag.id} color="purple">
+                {tag.name}
+              </Tag>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-2 sm:gap-4">
+            <Button
+              type="primary"
+              icon={<LinkOutlined />}
+              href={project.repo_url}
+              target="_blank"
+              size={'large'}
+              className="project-button min-w-0 flex-1 sm:flex-none"
+            >
+              <span className="hidden sm:inline">查看源码</span>
+              <span className="sm:hidden">源码</span>
+            </Button>
+            {project.website_url && (
+              <Button
+                icon={<GlobalOutlined />}
+                href={project.website_url}
+                target="_blank"
+                size={'large'}
+                className="project-button min-w-0 flex-1 sm:flex-none"
+              >
+                <span className="hidden sm:inline">官方网站</span>
+                <span className="sm:hidden">官网</span>
+              </Button>
+            )}
+            {project.download_url && (
+              <Button
+                icon={<DownloadOutlined />}
+                href={project.download_url}
+                target="_blank"
+                size={'large'}
+                className="project-button min-w-0 flex-1 sm:flex-none"
+              >
+                下载
+              </Button>
+            )}
+            <Button
+              icon={<HeartOutlined />}
+              size={'large'}
+              href={'#favorites'}
+              className="project-button min-w-0 flex-1 sm:flex-none"
+            >
+              <span className="hidden sm:inline">查看收藏</span>
+              <span className="sm:hidden">收藏</span>
+            </Button>
+          </div>
+        </div>
+        <div className="flex">
+          <div className="m-4 mr-8 text-center">
+            <div className="mb-1 text-sm text-gray-500">平均评分</div>
+            <div className="flex items-center justify-center gap-2">
+              <Rate disabled value={project.average_rating / 2} allowHalf />
+              <Text className="text-lg font-semibold">
+                {project.average_rating.toFixed(1)}
+              </Text>
+            </div>
+            <Text className="text-xs text-gray-400">
+              ({project.rating_count} 人评分)
+            </Text>
+          </div>
+          <div className="m-0! flex items-center justify-center gap-3 text-center">
+            <Card size="small">
+              <Avatar
+                size={{ xs: 40, sm: 48 }}
+                src={project.submitter.avatar}
+                icon={<UserOutlined />}
+              />
+              <div>
+                <div className="font-medium">{project.submitter.username}</div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </Card>
+  )
+
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-6">
       <div className="mx-auto max-w-7xl space-y-6! px-4">
         {/* 面包屑导航 */}
         <Breadcrumb
-          className="project-breadcrumb mb-4"
+          className="project-breadcrumb"
           items={[
             {
               href: '/',
@@ -140,125 +257,13 @@ export default async function Page({
         />
 
         {/* 项目头部信息 */}
-        <Card className="project-card">
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
-            <Avatar
-              size={{ xs: 60, sm: 70, md: 80, lg: 90, xl: 100, xxl: 120 }}
-              src={project.avatar}
-              icon={<CodeOutlined />}
-              className="project-avatar mx-auto border-2 border-gray-200 sm:mx-0"
-            />
-            <div className="w-full flex-1">
-              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                <Title level={2} className="project-title !mb-0">
-                  {project.name}
-                </Title>
-                {project.is_featured && (
-                  <Badge.Ribbon text="精选" color="gold">
-                    <div></div>
-                  </Badge.Ribbon>
-                )}
-                {project.is_approved && (
-                  <SafetyCertificateOutlined className="text-xl text-green-500!" />
-                )}
-              </div>
-
-              <Text className="project-brief mb-4 block text-lg text-gray-600">
-                {project.brief}
-              </Text>
-
-              <div className="mb-4 flex flex-wrap">
-                <Tag color={getPlatformColor(project.platform)}>
-                  {project.platform}
-                </Tag>
-                {project.programming_language && (
-                  <Tag color="blue">{project.programming_language}</Tag>
-                )}
-                {project.license && <Tag color="green">{project.license}</Tag>}
-                {project.tags.map((tag) => (
-                  <Tag key={tag.id} color="purple">
-                    {tag.name}
-                  </Tag>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-2 sm:gap-4">
-                <Button
-                  type="primary"
-                  icon={<LinkOutlined />}
-                  href={project.repo_url}
-                  target="_blank"
-                  size={'large'}
-                  className="project-button min-w-0 flex-1 sm:flex-none"
-                >
-                  <span className="hidden sm:inline">查看源码</span>
-                  <span className="sm:hidden">源码</span>
-                </Button>
-                {project.website_url && (
-                  <Button
-                    icon={<GlobalOutlined />}
-                    href={project.website_url}
-                    target="_blank"
-                    size={'large'}
-                    className="project-button min-w-0 flex-1 sm:flex-none"
-                  >
-                    <span className="hidden sm:inline">官方网站</span>
-                    <span className="sm:hidden">官网</span>
-                  </Button>
-                )}
-                {project.download_url && (
-                  <Button
-                    icon={<DownloadOutlined />}
-                    href={project.download_url}
-                    target="_blank"
-                    size={'large'}
-                    className="project-button min-w-0 flex-1 sm:flex-none"
-                  >
-                    下载
-                  </Button>
-                )}
-                <Button
-                  icon={<HeartOutlined />}
-                  size={'large'}
-                  href={'#favorites'}
-                  className="project-button min-w-0 flex-1 sm:flex-none"
-                >
-                  <span className="hidden sm:inline">查看收藏</span>
-                  <span className="sm:hidden">收藏</span>
-                </Button>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="m-4 mr-8 text-center">
-                <div className="mb-1 text-sm text-gray-500">平均评分</div>
-                <div className="flex items-center justify-center gap-2">
-                  <Rate disabled value={project.average_rating / 2} allowHalf />
-                  <Text className="text-lg font-semibold">
-                    {project.average_rating.toFixed(1)}
-                  </Text>
-                </div>
-                <Text className="text-xs text-gray-400">
-                  ({project.rating_count} 人评分)
-                </Text>
-              </div>
-              <div className="m-0! flex items-center justify-center gap-3 text-center">
-                <Card size="small">
-                  <Avatar
-                    size={{ xs: 40, sm: 48 }}
-                    src={project.submitter.avatar}
-                    icon={<UserOutlined />}
-                  />
-                  <div>
-                    <div className="font-medium">
-                      {project.submitter.username}
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </Card>
-
+        {project.is_featured ? (
+          <Ribbon text="精选" color="gold">
+            <HeaderCard />
+          </Ribbon>
+        ) : (
+          <HeaderCard />
+        )}
         <Row gutter={[16, 24]}>
           {/* 统计数据 */}
 
@@ -449,7 +454,7 @@ export default async function Page({
               </Card>
 
               {/* 相关链接 */}
-              <Card title="相关链接" className="project-card">
+              {/* <Card title="相关链接" className="project-card">
                 <Space direction="vertical" className="w-full">
                   <Button
                     block
@@ -482,7 +487,7 @@ export default async function Page({
                     </Button>
                   )}
                 </Space>
-              </Card>
+              </Card> */}
 
               {/* 项目评分 */}
               <ProjectRating

@@ -202,7 +202,6 @@ const TagManagementCard: React.FC = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         confirmLoading={isSubmitting}
-        destroyOnHidden
       >
         <Form form={form} layout="vertical" name="tagForm">
           <Form.Item
