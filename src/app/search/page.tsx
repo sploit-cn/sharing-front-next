@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import {
   Input,
   Button,
@@ -24,28 +24,30 @@ import {
   Platform,
   ProjectOrderFields,
   Order,
+  DataResponse,
+  PaginatedResponse,
 } from '@/types'
 import ProjectList from '@/components/ProjectList'
 import { HomeOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 
+// 表单字段类型定义
+interface SearchFormValues {
+  keyword?: string
+  programmingLanguage?: string
+  license?: string
+  platform?: Platform
+  isFeatured?: boolean
+  selectedTags?: number[]
+  orderBy: ProjectOrderFields
+  order: Order
+}
+
 const AdvancedSearchPage = () => {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm<SearchFormValues>()
 
-  // 搜索条件状态
-  const [searchFilters, setSearchFilters] = useState({
-    keyword: '',
-    programmingLanguage: undefined as string | undefined,
-    license: undefined as string | undefined,
-    platform: undefined as Platform | undefined,
-    isFeatured: undefined as boolean | undefined,
-    selectedTags: [] as number[],
-  })
-
-  // 排序和分页状态
-  const [orderBy, setOrderBy] = useState<ProjectOrderFields>('updated_at')
-  const [order, setOrder] = useState<Order>('desc')
+  // 分页状态
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [totalItems, setTotalItems] = useState<number>(0)
@@ -57,6 +59,8 @@ const AdvancedSearchPage = () => {
   const [searchedProjectIds, setSearchedProjectIds] = useState<number[] | null>(
     null,
   )
+
+  const formChanged = useRef(true)
 
   const availableOrderByFields: { label: string; value: ProjectOrderFields }[] =
     [
@@ -71,7 +75,7 @@ const AdvancedSearchPage = () => {
       { label: '项目名称', value: 'name' },
     ]
 
-  // 优化：缓存标签选项
+  // 缓存标签选项
   const tagOptions = useMemo(
     () =>
       allTags.map((tag) => ({
@@ -81,6 +85,7 @@ const AdvancedSearchPage = () => {
     [allTags],
   )
 
+  // 获取标签数据
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -89,69 +94,54 @@ const AdvancedSearchPage = () => {
           const data = await res.json()
           setAllTags(data.data || [])
         } else {
-          console.error('Failed to fetch tags')
+          console.error('获取标签列表失败')
         }
       } catch (error) {
-        console.error('Error fetching tags:', error)
+        console.error('获取标签列表失败:', error)
       }
     }
     fetchTags()
   }, [])
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
-    const keyword = searchParams.get('keyword')
-    if (keyword) {
-      setSearchFilters((prev) => ({ ...prev, keyword }))
-      // 延迟执行搜索，避免初始化时的竞态条件
-      setTimeout(() => handleSearch(1, pageSize, keyword), 0)
-    }
-  }, [])
-
-  // 优化：减少依赖项，使用 useCallback 的 ref 模式
+  // 核心搜索函数
   const handleSearch = useCallback(
-    async (page = 1, pSize = pageSize, keywordOverride?: string) => {
+    async (formValues: SearchFormValues, page = 1, pSize = pageSize) => {
       setLoading(true)
       setCurrentPage(page)
       setPageSize(pSize)
 
-      const currentFilters = {
-        ...searchFilters,
-        ...(keywordOverride !== undefined && { keyword: keywordOverride }),
-      }
-
       const searchParams: ProjectSearchParams = {
-        keyword: currentFilters.keyword || undefined,
-        programming_language: currentFilters.programmingLanguage || undefined,
-        license: currentFilters.license || undefined,
-        platform: currentFilters.platform || undefined,
-        is_featured: currentFilters.isFeatured,
-        tags: currentFilters.selectedTags,
+        keyword: formValues.keyword || undefined,
+        programming_language: formValues.programmingLanguage || undefined,
+        license: formValues.license || undefined,
+        platform: formValues.platform || undefined,
+        is_featured: formValues.isFeatured,
+        tags: formValues.selectedTags || [],
       }
 
+      let projectIdsToFetch = searchedProjectIds
       try {
-        let projectIdsToFetch = searchedProjectIds
+        if (formChanged.current) {
+          const searchQueryParams = new URLSearchParams()
 
-        // 只有在需要新搜索时才调用 /search
-        if (searchedProjectIds === null || page === 1) {
+          Object.entries(searchParams).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+              if (Array.isArray(value)) {
+                if (value.length > 0) {
+                  value.forEach((v) => searchQueryParams.append(key, String(v)))
+                }
+              } else {
+                searchQueryParams.set(key, String(value))
+              }
+            }
+          })
+
           const searchRes = await fetch(
-            `/api/projects/search?${new URLSearchParams(
-              Object.entries(searchParams).reduce(
-                (acc, [key, value]) => {
-                  if (value !== undefined && value !== null && value !== '') {
-                    if (!Array.isArray(value)) {
-                      acc[key] = String(value)
-                    }
-                  }
-                  return acc
-                },
-                {} as Record<string, string>,
-              ),
-            )}${searchParams.tags.length > 0 ? `&tags=${searchParams.tags.join('&tags=')}` : ''}`,
+            `/api/projects/search?${searchQueryParams.toString()}`,
           )
 
           if (!searchRes.ok) {
-            console.error('Failed to search projects')
+            console.error('搜索项目失败')
             setSearchResults([])
             setTotalItems(0)
             setSearchedProjectIds([])
@@ -159,11 +149,13 @@ const AdvancedSearchPage = () => {
             return
           }
 
-          const searchData = await searchRes.json()
+          const searchData = (await searchRes.json()) as DataResponse<number[]>
           projectIdsToFetch = searchData.data || []
           setSearchedProjectIds(projectIdsToFetch)
+          formChanged.current = false
         }
 
+        // 如果没有搜索结果
         if (!projectIdsToFetch || projectIdsToFetch.length === 0) {
           setSearchResults([])
           setTotalItems(0)
@@ -171,92 +163,92 @@ const AdvancedSearchPage = () => {
           return
         }
 
+        // 获取项目详情
         const paginationParams: ProjectPaginationParams = {
           page,
           page_size: pSize,
-          order_by: orderBy === 'id' ? undefined : orderBy,
-          order,
+          order_by:
+            formValues.orderBy === 'id' ? undefined : formValues.orderBy,
+          order: formValues.order,
           ids: projectIdsToFetch,
         }
+        const queryParams = new URLSearchParams()
+        Object.entries(paginationParams).forEach(([key, value]) => {
+          if (key === 'ids' && Array.isArray(value)) {
+            value.forEach((id) => queryParams.append(key, String(id)))
+          } else if (value !== undefined) {
+            queryParams.set(key, String(value))
+          }
+        })
 
         const projectsRes = await fetch(
-          `/api/projects?${new URLSearchParams(
-            Object.entries(paginationParams).reduce((acc, [key, value]) => {
-              if (key === 'ids' && Array.isArray(value)) {
-                value.forEach((id) => acc.append(key, String(id)))
-              } else if (value !== undefined) {
-                acc.set(key, String(value))
-              }
-              return acc
-            }, new URLSearchParams()),
-          )}`,
+          `/api/projects?${queryParams.toString()}`,
         )
 
         if (projectsRes.ok) {
-          const projectsData = await projectsRes.json()
+          const projectsData =
+            (await projectsRes.json()) as PaginatedResponse<ProjectBaseResponse>
           setSearchResults(projectsData.data.items || [])
-          setTotalItems(projectsData.data.total_items || 0)
+          setTotalItems(projectsData.data.total || 0)
         } else {
-          console.error('Failed to fetch project details')
+          console.error('获取项目信息失败')
           setSearchResults([])
           setTotalItems(0)
         }
       } catch (error) {
-        console.error('Error during search:', error)
+        console.error('搜索项目信息失败', error)
         setSearchResults([])
         setTotalItems(0)
       } finally {
         setLoading(false)
       }
     },
-    [searchFilters, orderBy, order, pageSize, searchedProjectIds],
+    [pageSize, searchedProjectIds],
   )
 
-  // 优化：使用稳定的更新函数
-  const updateFilter = useCallback(
-    (key: keyof typeof searchFilters, value: any) => {
-      setSearchFilters((prev) => ({ ...prev, [key]: value }))
-      setSearchedProjectIds(null)
-    },
-    [],
-  )
+  // 初始化表单默认值和 URL 参数处理
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const keyword = searchParams.get('keyword')
 
-  const onFinishSearch = useCallback(() => {
-    setSearchedProjectIds(null)
-    handleSearch(1, pageSize)
-  }, [handleSearch, pageSize])
+    // 设置表单初始值
+    const initialValues: SearchFormValues = {
+      keyword: keyword || undefined,
+      orderBy: 'id',
+      order: 'desc',
+    }
 
-  const handleTableChange = useCallback(
-    (newPage: number, newPageSize?: number) => {
-      handleSearch(newPage, newPageSize || pageSize)
+    form.setFieldsValue(initialValues)
+
+    // 如果有关键词，自动执行搜索
+    if (keyword) {
+      setTimeout(() => {
+        handleSearch(initialValues, 1, pageSize)
+      }, 0)
+    }
+  }, [])
+
+  // 表单提交处理
+  const onFinishSearch = useCallback(
+    (values: SearchFormValues) => {
+      // setSearchedProjectIds(null)
+      handleSearch(values, 1, pageSize)
     },
     [handleSearch, pageSize],
   )
 
-  // 优化：防抖输入处理
-  const handleKeywordChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      updateFilter('keyword', value)
+  // 分页处理
+  const handleTableChange = useCallback(
+    (newPage: number, newPageSize?: number) => {
+      const currentValues = form.getFieldsValue()
+      handleSearch(currentValues, newPage, newPageSize || pageSize)
     },
-    [updateFilter],
+    [form, handleSearch, pageSize],
   )
 
-  const handleProgrammingLanguageChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      updateFilter('programmingLanguage', value)
-    },
-    [updateFilter],
-  )
-
-  const handleLicenseChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      updateFilter('license', value)
-    },
-    [updateFilter],
-  )
+  const handleFieldChange = useCallback(() => {
+    formChanged.current = true
+  }, [])
 
   return (
     <div className="mx-auto px-4">
@@ -277,83 +269,78 @@ const AdvancedSearchPage = () => {
           },
         ]}
       />
-      <Card className="">
-        <Form form={form} layout="vertical" onFinish={onFinishSearch}>
+
+      <Card>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinishSearch}
+          preserve={false} // 防止表单被销毁时保留值
+        >
           <Row gutter={16}>
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="关键词">
+              <Form.Item name="keyword" label="关键词">
                 <Input
                   placeholder="搜索项目名称、简介、描述"
-                  value={searchFilters.keyword}
-                  onChange={handleKeywordChange}
+                  onChange={handleFieldChange}
                 />
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="平台">
+              <Form.Item name="platform" label="平台">
                 <Select
                   placeholder="选择平台"
-                  value={searchFilters.platform}
-                  onChange={(value) => updateFilter('platform', value)}
                   allowClear
+                  onChange={handleFieldChange}
                 >
                   <Option value={Platform.GITHUB}>GitHub</Option>
                   <Option value={Platform.GITEE}>Gitee</Option>
                 </Select>
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="编程语言">
+              <Form.Item name="programmingLanguage" label="编程语言">
                 <Input
                   placeholder="例如：Python, JavaScript"
-                  value={searchFilters.programmingLanguage}
-                  onChange={handleProgrammingLanguageChange}
+                  onChange={handleFieldChange}
                 />
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="许可证">
+              <Form.Item name="license" label="许可证">
                 <Input
                   placeholder="例如：MIT, Apache-2.0"
-                  value={searchFilters.license}
-                  onChange={handleLicenseChange}
+                  onChange={handleFieldChange}
                 />
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="标签">
+              <Form.Item name="selectedTags" label="标签">
                 <Select
                   mode="multiple"
                   placeholder="选择标签"
-                  value={searchFilters.selectedTags}
-                  onChange={(values) => updateFilter('selectedTags', values)}
                   options={tagOptions}
                   loading={allTags.length === 0}
+                  onChange={handleFieldChange}
                 />
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label=" ">
-                <Checkbox
-                  checked={searchFilters.isFeatured}
-                  onChange={(e) => updateFilter('isFeatured', e.target.checked)}
-                >
-                  仅显示精选项目
-                </Checkbox>
+              <Form.Item name="isFeatured" valuePropName="checked" label=" ">
+                <Checkbox onChange={handleFieldChange}>仅显示精选项目</Checkbox>
               </Form.Item>
             </Col>
           </Row>
+
           <Row gutter={16} align="bottom">
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="排序字段">
-                <Select
-                  value={orderBy}
-                  onChange={(value) => {
-                    setOrderBy(value)
-                    setSearchedProjectIds(null)
-                  }}
-                  style={{ width: '100%' }}
-                >
+              <Form.Item name="orderBy" label="排序字段" initialValue="id">
+                <Select style={{ width: '100%' }} onChange={handleFieldChange}>
                   {availableOrderByFields.map((field) => (
                     <Option key={field.value} value={field.value}>
                       {field.label}
@@ -362,20 +349,16 @@ const AdvancedSearchPage = () => {
                 </Select>
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item label="排序顺序">
-                <Radio.Group
-                  value={order}
-                  onChange={(e) => {
-                    setOrder(e.target.value)
-                    setSearchedProjectIds(null)
-                  }}
-                >
+              <Form.Item name="order" label="排序顺序" initialValue="desc">
+                <Radio.Group onChange={handleFieldChange}>
                   <Radio.Button value="desc">降序</Radio.Button>
                   <Radio.Button value="asc">升序</Radio.Button>
                 </Radio.Group>
               </Form.Item>
             </Col>
+
             <Col xs={24} sm={24} md={8} lg={6}>
               <Form.Item>
                 <Button
@@ -421,17 +404,14 @@ const AdvancedSearchPage = () => {
               onChange={handleTableChange}
               showSizeChanger
               onShowSizeChange={handleTableChange}
-              style={{ marginTop: '20px', textAlign: 'right' }}
+              style={{
+                marginTop: '20px',
+                marginBottom: '20px',
+                textAlign: 'right',
+              }}
             />
           )}
         </>
-      )}
-      {!loading && searchedProjectIds === null && (
-        <Typography.Text
-          style={{ display: 'block', textAlign: 'center', margin: '20px 0' }}
-        >
-          请输入搜索条件并点击搜索按钮。
-        </Typography.Text>
       )}
     </div>
   )

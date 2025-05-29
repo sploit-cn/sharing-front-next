@@ -45,6 +45,8 @@ import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import CodeBlock from '@/components/CodeBlock'
 import ProjectStatusControl from '@/components/project/ProjectStatusControl'
+import langColors from '@/lib/languageColors.json'
+const typedLangColors = langColors as Record<string, string>
 export async function generateMetadata({
   params,
 }: {
@@ -119,7 +121,7 @@ export default async function Page({
 
   const HeaderCard = () => (
     <Card className="project-card">
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
+      <div className="flex flex-col items-start gap-4 sm:gap-6 md:flex-row">
         <Avatar
           size={{ xs: 60, sm: 70, md: 80, lg: 90, xl: 100, xxl: 120 }}
           src={project.avatar}
@@ -148,7 +150,11 @@ export default async function Page({
               {project.platform}
             </Tag>
             {project.programming_language && (
-              <Tag color="blue">{project.programming_language}</Tag>
+              <Tag
+                color={typedLangColors[project.programming_language] || 'blue'}
+              >
+                {project.programming_language}
+              </Tag>
             )}
             {project.license && <Tag color="green">{project.license}</Tag>}
             {project.tags.map((tag) => (

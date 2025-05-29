@@ -12,11 +12,10 @@ const HomePage = async () => {
   let initialCurrentPage = 1
   let initialTotalPages = 1
   let fetchError = false
-
   try {
     // Fetch the first page of projects on the server
     const response = await fetch(
-      `${getBaseUrl()}/api/projects?page=1&page_size=10&order_by=updated_at&order=desc`,
+      `${getBaseUrl()}/api/projects?page=1&page_size=5&order_by=updated_at&order=desc`,
       { cache: 'no-store' },
     )
     if (!response.ok) {
@@ -28,7 +27,7 @@ const HomePage = async () => {
     initialCurrentPage = data.data.page
     initialTotalPages = data.data.pages
   } catch (error) {
-    console.error('Error fetching initial projects for SSR:', error)
+    console.error('SSR 获取项目错误:', error)
     fetchError = true
     // initialProjects will remain empty, currentPage and totalPages will be default
   }

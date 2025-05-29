@@ -31,7 +31,7 @@ const ProjectsClientRenderer = ({
       setLoading(true)
       try {
         const response = await fetch(
-          `/api/projects?page=${page}&page_size=10&order_by=updated_at&order=desc`,
+          `/api/projects?page=${page}&page_size=5&order_by=updated_at&order=desc`,
         )
         if (!response.ok) {
           throw new Error('Failed to fetch projects')
@@ -88,7 +88,7 @@ const ProjectsClientRenderer = ({
         </List>
       )}
       <div ref={loaderRef} className="mt-5 h-3 text-center">
-        {loading && <Spin tip="加载中..." />}
+        {loading && <Spin />}
         {!loading && !hasMore && projects.length > 0 && (
           <Typography.Text type="secondary">没有更多了</Typography.Text>
         )}

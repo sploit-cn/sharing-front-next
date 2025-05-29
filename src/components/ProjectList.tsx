@@ -1,19 +1,22 @@
 'use client'
+import langColor from '@/lib/languageColors.json'
 import { ProjectBaseResponse } from '@/types'
 import { formatNumber } from '@/utils/numbers'
 import { EyeOutlined, GithubOutlined, StarOutlined } from '@ant-design/icons'
-import { Avatar } from 'antd'
+import { Avatar, Space } from 'antd'
 import Item from 'antd/es/list/Item'
 import Paragraph from 'antd/es/typography/Paragraph'
 import React from 'react'
 import { Meta } from 'antd/es/list/Item'
-import { GiteeIcon, IssuesIcon, LawIcon } from './icons'
+import { GiteeIcon, IssuesIcon, LawIcon, RoundIcon } from './icons'
 import IconText from './IconText'
 import { useRouter } from 'next/navigation'
 import useUserStore from '@/store/userStore'
 import Ribbon from 'antd/es/badge/Ribbon'
+const typedLangColor = langColor as Record<string, string>
 const ProjectListItem = ({ project }: { project: ProjectBaseResponse }) => {
   const router = useRouter()
+  const languageColor = typedLangColor[project.programming_language || 'Other']
   return (
     <Item
       key={project.id}
@@ -43,8 +46,12 @@ const ProjectListItem = ({ project }: { project: ProjectBaseResponse }) => {
           text={project.license || 'Unknown'}
           key="list-vertical-license"
         />,
+        <Space size="small" key="list-vertical-language">
+          <RoundIcon style={{ color: languageColor }} />
+          {project.programming_language || 'Other'}
+        </Space>,
       ]}
-      className="hover:bg-bghover active:bg-bgactive transition-colors duration-300"
+      className="hover:bg-bghover active:bg-bgactive cursor-pointer transition-colors duration-300"
       style={{
         opacity: project.is_approved ? 1 : 0.5,
         filter: project.is_approved ? 'none' : 'grayscale(100%)',

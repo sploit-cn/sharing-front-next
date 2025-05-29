@@ -7,8 +7,8 @@
 }
 
 @theme {
-  --color-bghover: var(--color-gray-700);
-  --color-bgactive: var(--color-gray-600);
+  --color-bghover: var(--color-gray-200);
+  --color-bgactive: var(--color-gray-300);
 }
 
 @theme inline {

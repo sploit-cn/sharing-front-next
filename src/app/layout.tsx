@@ -32,8 +32,8 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
           <Header className="border-b-bgactive! sticky top-0 z-10 flex items-center justify-between border-b-2 backdrop-blur-sm">
             <Flex gap="small">
               <Link href="/">
-                <Title className="mt-1" level={2}>
-                  Opensource Sharing
+                <Title className="mt-3 hidden sm:block" level={2}>
+                  OSHARE
                 </Title>
               </Link>
             </Flex>
