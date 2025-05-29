@@ -36,51 +36,16 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
   const fetchRelatedProjects = useCallback(async () => {
     setLoading(true)
     try {
-      // 构建搜索参数
-      const searchParams = new URLSearchParams()
-
-      // 添加标签筛选
-      if (tags.length > 0) {
-        tags.forEach((tag) => searchParams.append('tags', tag.id.toString()))
-      }
-
-      // 添加编程语言筛选
-      if (programmingLanguage) {
-        searchParams.set('programming_language', programmingLanguage)
-      } else {
-        searchParams.set('programming_language', 'null')
-      }
-
-      // 搜索相关项目
-      const searchResponse = await ky
-        .get(`/api/projects/search?${searchParams.toString()}`)
+      // 获取项目详情
+      const searchParams = new URLSearchParams({
+        project_id: projectId.toString(),
+      })
+      const projectsResponse = await ky
+        .get(`/api/projects/related?${searchParams.toString()}`)
         .json<{
-          data: number[]
+          data: ProjectRelatedResponse[]
         }>()
-
-      // 过滤掉当前项目
-      const relatedIds = searchResponse.data
-        .filter((id) => id !== projectId)
-        .slice(0, limit)
-
-      if (relatedIds.length > 0) {
-        // 获取项目详情
-        const searchParams = new URLSearchParams({
-          page: '1',
-          page_size: limit.toString(),
-          order_by: 'stars',
-          order: 'desc',
-        })
-        relatedIds.forEach((id) => searchParams.append('ids', id.toString()))
-        const projectsResponse = await ky
-          .get(`/api/projects?${searchParams.toString()}`)
-          .json<{
-            data: {
-              items: ProjectRelatedResponse[]
-            }
-          }>()
-        setRelatedProjects(projectsResponse.data.items)
-      }
+      setRelatedProjects(projectsResponse.data)
     } catch (error) {
       console.error('获取相关项目失败:', error)
       // 如果搜索失败，获取热门项目作为推荐
@@ -125,15 +90,15 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
         </div>
       }
       className="border-0 shadow-lg"
-      extra={
-        relatedProjects.length > 0 && (
-          <Link href="/projects">
-            <Button type="text" icon={<ArrowRightOutlined />}>
-              查看更多
-            </Button>
-          </Link>
-        )
-      }
+      // extra={
+      //   relatedProjects.length > 0 && (
+      //     <Link href="/projects">
+      //       <Button type="text" icon={<ArrowRightOutlined />}>
+      //         查看更多
+      //       </Button>
+      //     </Link>
+      //   )
+      // }
     >
       <Spin spinning={loading}>
         {relatedProjects.length === 0 && !loading ? (

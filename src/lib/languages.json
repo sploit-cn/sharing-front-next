@@ -1,0 +1,1883 @@
+[
+  {
+    "value": "1C Enterprise"
+  },
+  {
+    "value": "2-Dimensional Array"
+  },
+  {
+    "value": "4D"
+  },
+  {
+    "value": "ABAP"
+  },
+  {
+    "value": "ABAP CDS"
+  },
+  {
+    "value": "AGS Script"
+  },
+  {
+    "value": "AIDL"
+  },
+  {
+    "value": "AL"
+  },
+  {
+    "value": "AMPL"
+  },
+  {
+    "value": "ANTLR"
+  },
+  {
+    "value": "API Blueprint"
+  },
+  {
+    "value": "APL"
+  },
+  {
+    "value": "ASP.NET"
+  },
+  {
+    "value": "ATS"
+  },
+  {
+    "value": "ActionScript"
+  },
+  {
+    "value": "Ada"
+  },
+  {
+    "value": "Adblock Filter List"
+  },
+  {
+    "value": "Adobe Font Metrics"
+  },
+  {
+    "value": "Agda"
+  },
+  {
+    "value": "Alloy"
+  },
+  {
+    "value": "Alpine Abuild"
+  },
+  {
+    "value": "Altium Designer"
+  },
+  {
+    "value": "AngelScript"
+  },
+  {
+    "value": "Answer Set Programming"
+  },
+  {
+    "value": "Ant Build System"
+  },
+  {
+    "value": "Antlers"
+  },
+  {
+    "value": "ApacheConf"
+  },
+  {
+    "value": "Apex"
+  },
+  {
+    "value": "Apollo Guidance Computer"
+  },
+  {
+    "value": "AppleScript"
+  },
+  {
+    "value": "Arc"
+  },
+  {
+    "value": "AsciiDoc"
+  },
+  {
+    "value": "AspectJ"
+  },
+  {
+    "value": "Assembly"
+  },
+  {
+    "value": "Astro"
+  },
+  {
+    "value": "Asymptote"
+  },
+  {
+    "value": "Augeas"
+  },
+  {
+    "value": "AutoHotkey"
+  },
+  {
+    "value": "AutoIt"
+  },
+  {
+    "value": "Avro IDL"
+  },
+  {
+    "value": "Awk"
+  },
+  {
+    "value": "B4X"
+  },
+  {
+    "value": "BASIC"
+  },
+  {
+    "value": "BQN"
+  },
+  {
+    "value": "Ballerina"
+  },
+  {
+    "value": "Batchfile"
+  },
+  {
+    "value": "Beef"
+  },
+  {
+    "value": "Berry"
+  },
+  {
+    "value": "BibTeX"
+  },
+  {
+    "value": "Bicep"
+  },
+  {
+    "value": "Bikeshed"
+  },
+  {
+    "value": "Bison"
+  },
+  {
+    "value": "BitBake"
+  },
+  {
+    "value": "Blade"
+  },
+  {
+    "value": "BlitzBasic"
+  },
+  {
+    "value": "BlitzMax"
+  },
+  {
+    "value": "Bluespec"
+  },
+  {
+    "value": "Bluespec BH"
+  },
+  {
+    "value": "Boo"
+  },
+  {
+    "value": "Boogie"
+  },
+  {
+    "value": "Brainfuck"
+  },
+  {
+    "value": "BrighterScript"
+  },
+  {
+    "value": "Brightscript"
+  },
+  {
+    "value": "Browserslist"
+  },
+  {
+    "value": "C"
+  },
+  {
+    "value": "C#"
+  },
+  {
+    "value": "C++"
+  },
+  {
+    "value": "CAP CDS"
+  },
+  {
+    "value": "CLIPS"
+  },
+  {
+    "value": "CMake"
+  },
+  {
+    "value": "COLLADA"
+  },
+  {
+    "value": "CSON"
+  },
+  {
+    "value": "CSS"
+  },
+  {
+    "value": "CSV"
+  },
+  {
+    "value": "CUE"
+  },
+  {
+    "value": "CWeb"
+  },
+  {
+    "value": "Cabal Config"
+  },
+  {
+    "value": "Caddyfile"
+  },
+  {
+    "value": "Cadence"
+  },
+  {
+    "value": "Cairo"
+  },
+  {
+    "value": "Cairo Zero"
+  },
+  {
+    "value": "CameLIGO"
+  },
+  {
+    "value": "Cap'n Proto"
+  },
+  {
+    "value": "Carbon"
+  },
+  {
+    "value": "Ceylon"
+  },
+  {
+    "value": "Chapel"
+  },
+  {
+    "value": "ChucK"
+  },
+  {
+    "value": "Circom"
+  },
+  {
+    "value": "Cirru"
+  },
+  {
+    "value": "Clarion"
+  },
+  {
+    "value": "Clarity"
+  },
+  {
+    "value": "Classic ASP"
+  },
+  {
+    "value": "Clean"
+  },
+  {
+    "value": "Click"
+  },
+  {
+    "value": "Clojure"
+  },
+  {
+    "value": "Closure Templates"
+  },
+  {
+    "value": "Cloud Firestore Security Rules"
+  },
+  {
+    "value": "CodeQL"
+  },
+  {
+    "value": "CoffeeScript"
+  },
+  {
+    "value": "ColdFusion"
+  },
+  {
+    "value": "ColdFusion CFC"
+  },
+  {
+    "value": "Common Lisp"
+  },
+  {
+    "value": "Common Workflow Language"
+  },
+  {
+    "value": "Component Pascal"
+  },
+  {
+    "value": "Crystal"
+  },
+  {
+    "value": "Csound"
+  },
+  {
+    "value": "Csound Document"
+  },
+  {
+    "value": "Csound Score"
+  },
+  {
+    "value": "Cuda"
+  },
+  {
+    "value": "Curry"
+  },
+  {
+    "value": "Cylc"
+  },
+  {
+    "value": "Cypher"
+  },
+  {
+    "value": "Cython"
+  },
+  {
+    "value": "D"
+  },
+  {
+    "value": "D2"
+  },
+  {
+    "value": "DM"
+  },
+  {
+    "value": "Dafny"
+  },
+  {
+    "value": "Darcs Patch"
+  },
+  {
+    "value": "Dart"
+  },
+  {
+    "value": "DataWeave"
+  },
+  {
+    "value": "Debian Package Control File"
+  },
+  {
+    "value": "DenizenScript"
+  },
+  {
+    "value": "Dhall"
+  },
+  {
+    "value": "DirectX 3D File"
+  },
+  {
+    "value": "Dockerfile"
+  },
+  {
+    "value": "Dogescript"
+  },
+  {
+    "value": "Dotenv"
+  },
+  {
+    "value": "Dune"
+  },
+  {
+    "value": "Dylan"
+  },
+  {
+    "value": "E"
+  },
+  {
+    "value": "ECL"
+  },
+  {
+    "value": "ECLiPSe"
+  },
+  {
+    "value": "EJS"
+  },
+  {
+    "value": "EQ"
+  },
+  {
+    "value": "Earthly"
+  },
+  {
+    "value": "Easybuild"
+  },
+  {
+    "value": "Ecere Projects"
+  },
+  {
+    "value": "Ecmarkup"
+  },
+  {
+    "value": "Edge"
+  },
+  {
+    "value": "EdgeQL"
+  },
+  {
+    "value": "EditorConfig"
+  },
+  {
+    "value": "Eiffel"
+  },
+  {
+    "value": "Elixir"
+  },
+  {
+    "value": "Elm"
+  },
+  {
+    "value": "Elvish"
+  },
+  {
+    "value": "Elvish Transcript"
+  },
+  {
+    "value": "Emacs Lisp"
+  },
+  {
+    "value": "EmberScript"
+  },
+  {
+    "value": "Erlang"
+  },
+  {
+    "value": "Euphoria"
+  },
+  {
+    "value": "F#"
+  },
+  {
+    "value": "F*"
+  },
+  {
+    "value": "FIGlet Font"
+  },
+  {
+    "value": "FIRRTL"
+  },
+  {
+    "value": "FLUX"
+  },
+  {
+    "value": "Factor"
+  },
+  {
+    "value": "Fancy"
+  },
+  {
+    "value": "Fantom"
+  },
+  {
+    "value": "Faust"
+  },
+  {
+    "value": "Fennel"
+  },
+  {
+    "value": "Filebench WML"
+  },
+  {
+    "value": "Fluent"
+  },
+  {
+    "value": "Forth"
+  },
+  {
+    "value": "Fortran"
+  },
+  {
+    "value": "Fortran Free Form"
+  },
+  {
+    "value": "FreeBASIC"
+  },
+  {
+    "value": "FreeMarker"
+  },
+  {
+    "value": "Frege"
+  },
+  {
+    "value": "Futhark"
+  },
+  {
+    "value": "G-code"
+  },
+  {
+    "value": "GAML"
+  },
+  {
+    "value": "GAMS"
+  },
+  {
+    "value": "GAP"
+  },
+  {
+    "value": "GCC Machine Description"
+  },
+  {
+    "value": "GDScript"
+  },
+  {
+    "value": "GEDCOM"
+  },
+  {
+    "value": "GLSL"
+  },
+  {
+    "value": "GSC"
+  },
+  {
+    "value": "Game Maker Language"
+  },
+  {
+    "value": "Gemfile.lock"
+  },
+  {
+    "value": "Gemini"
+  },
+  {
+    "value": "Genero 4gl"
+  },
+  {
+    "value": "Genero per"
+  },
+  {
+    "value": "Genie"
+  },
+  {
+    "value": "Genshi"
+  },
+  {
+    "value": "Gentoo Ebuild"
+  },
+  {
+    "value": "Gentoo Eclass"
+  },
+  {
+    "value": "Gerber Image"
+  },
+  {
+    "value": "Gherkin"
+  },
+  {
+    "value": "Git Attributes"
+  },
+  {
+    "value": "Git Config"
+  },
+  {
+    "value": "Git Revision List"
+  },
+  {
+    "value": "Gleam"
+  },
+  {
+    "value": "Glimmer JS"
+  },
+  {
+    "value": "Glimmer TS"
+  },
+  {
+    "value": "Glyph"
+  },
+  {
+    "value": "Gnuplot"
+  },
+  {
+    "value": "Go"
+  },
+  {
+    "value": "Go Checksums"
+  },
+  {
+    "value": "Go Module"
+  },
+  {
+    "value": "Go Workspace"
+  },
+  {
+    "value": "Godot Resource"
+  },
+  {
+    "value": "Golo"
+  },
+  {
+    "value": "Gosu"
+  },
+  {
+    "value": "Grace"
+  },
+  {
+    "value": "Gradle"
+  },
+  {
+    "value": "Gradle Kotlin DSL"
+  },
+  {
+    "value": "Grammatical Framework"
+  },
+  {
+    "value": "GraphQL"
+  },
+  {
+    "value": "Graphviz (DOT)"
+  },
+  {
+    "value": "Groovy"
+  },
+  {
+    "value": "Groovy Server Pages"
+  },
+  {
+    "value": "HAProxy"
+  },
+  {
+    "value": "HCL"
+  },
+  {
+    "value": "HIP"
+  },
+  {
+    "value": "HLSL"
+  },
+  {
+    "value": "HOCON"
+  },
+  {
+    "value": "HTML"
+  },
+  {
+    "value": "HTML+ECR"
+  },
+  {
+    "value": "HTML+EEX"
+  },
+  {
+    "value": "HTML+ERB"
+  },
+  {
+    "value": "HTML+PHP"
+  },
+  {
+    "value": "HTML+Razor"
+  },
+  {
+    "value": "HTTP"
+  },
+  {
+    "value": "HXML"
+  },
+  {
+    "value": "Hack"
+  },
+  {
+    "value": "Haml"
+  },
+  {
+    "value": "Handlebars"
+  },
+  {
+    "value": "Harbour"
+  },
+  {
+    "value": "Hare"
+  },
+  {
+    "value": "Haskell"
+  },
+  {
+    "value": "Haxe"
+  },
+  {
+    "value": "HiveQL"
+  },
+  {
+    "value": "HolyC"
+  },
+  {
+    "value": "Hosts File"
+  },
+  {
+    "value": "Hy"
+  },
+  {
+    "value": "IDL"
+  },
+  {
+    "value": "IGOR Pro"
+  },
+  {
+    "value": "INI"
+  },
+  {
+    "value": "ISPC"
+  },
+  {
+    "value": "Idris"
+  },
+  {
+    "value": "Ignore List"
+  },
+  {
+    "value": "ImageJ Macro"
+  },
+  {
+    "value": "Imba"
+  },
+  {
+    "value": "Inno Setup"
+  },
+  {
+    "value": "Io"
+  },
+  {
+    "value": "Ioke"
+  },
+  {
+    "value": "Isabelle"
+  },
+  {
+    "value": "Isabelle ROOT"
+  },
+  {
+    "value": "J"
+  },
+  {
+    "value": "JAR Manifest"
+  },
+  {
+    "value": "JCL"
+  },
+  {
+    "value": "JFlex"
+  },
+  {
+    "value": "JSON"
+  },
+  {
+    "value": "JSON with Comments"
+  },
+  {
+    "value": "JSON5"
+  },
+  {
+    "value": "JSONLD"
+  },
+  {
+    "value": "JSONiq"
+  },
+  {
+    "value": "Jai"
+  },
+  {
+    "value": "Janet"
+  },
+  {
+    "value": "Jasmin"
+  },
+  {
+    "value": "Java"
+  },
+  {
+    "value": "Java Properties"
+  },
+  {
+    "value": "Java Server Pages"
+  },
+  {
+    "value": "Java Template Engine"
+  },
+  {
+    "value": "JavaScript"
+  },
+  {
+    "value": "JavaScript+ERB"
+  },
+  {
+    "value": "Jest Snapshot"
+  },
+  {
+    "value": "JetBrains MPS"
+  },
+  {
+    "value": "Jinja"
+  },
+  {
+    "value": "Jison"
+  },
+  {
+    "value": "Jison Lex"
+  },
+  {
+    "value": "Jolie"
+  },
+  {
+    "value": "Jsonnet"
+  },
+  {
+    "value": "Julia"
+  },
+  {
+    "value": "Julia REPL"
+  },
+  {
+    "value": "Jupyter Notebook"
+  },
+  {
+    "value": "Just"
+  },
+  {
+    "value": "KDL"
+  },
+  {
+    "value": "KRL"
+  },
+  {
+    "value": "Kaitai Struct"
+  },
+  {
+    "value": "KakouneScript"
+  },
+  {
+    "value": "KerboScript"
+  },
+  {
+    "value": "KiCad Layout"
+  },
+  {
+    "value": "KiCad Legacy Layout"
+  },
+  {
+    "value": "KiCad Schematic"
+  },
+  {
+    "value": "Koka"
+  },
+  {
+    "value": "Kotlin"
+  },
+  {
+    "value": "LFE"
+  },
+  {
+    "value": "LLVM"
+  },
+  {
+    "value": "LOLCODE"
+  },
+  {
+    "value": "LSL"
+  },
+  {
+    "value": "LabVIEW"
+  },
+  {
+    "value": "Lark"
+  },
+  {
+    "value": "Lasso"
+  },
+  {
+    "value": "Latte"
+  },
+  {
+    "value": "Less"
+  },
+  {
+    "value": "Lex"
+  },
+  {
+    "value": "LigoLANG"
+  },
+  {
+    "value": "LilyPond"
+  },
+  {
+    "value": "Liquid"
+  },
+  {
+    "value": "Literate Agda"
+  },
+  {
+    "value": "Literate CoffeeScript"
+  },
+  {
+    "value": "Literate Haskell"
+  },
+  {
+    "value": "LiveCode Script"
+  },
+  {
+    "value": "LiveScript"
+  },
+  {
+    "value": "Logtalk"
+  },
+  {
+    "value": "LookML"
+  },
+  {
+    "value": "Lua"
+  },
+  {
+    "value": "Luau"
+  },
+  {
+    "value": "M3U"
+  },
+  {
+    "value": "MATLAB"
+  },
+  {
+    "value": "MAXScript"
+  },
+  {
+    "value": "MDX"
+  },
+  {
+    "value": "MLIR"
+  },
+  {
+    "value": "MQL4"
+  },
+  {
+    "value": "MQL5"
+  },
+  {
+    "value": "MTML"
+  },
+  {
+    "value": "Macaulay2"
+  },
+  {
+    "value": "Makefile"
+  },
+  {
+    "value": "Mako"
+  },
+  {
+    "value": "Markdown"
+  },
+  {
+    "value": "Marko"
+  },
+  {
+    "value": "Mask"
+  },
+  {
+    "value": "Mathematica"
+  },
+  {
+    "value": "Max"
+  },
+  {
+    "value": "Mercury"
+  },
+  {
+    "value": "Mermaid"
+  },
+  {
+    "value": "Meson"
+  },
+  {
+    "value": "Metal"
+  },
+  {
+    "value": "MiniYAML"
+  },
+  {
+    "value": "MiniZinc"
+  },
+  {
+    "value": "Mint"
+  },
+  {
+    "value": "Mirah"
+  },
+  {
+    "value": "Modelica"
+  },
+  {
+    "value": "Modula-2"
+  },
+  {
+    "value": "Modula-3"
+  },
+  {
+    "value": "Mojo"
+  },
+  {
+    "value": "Monkey C"
+  },
+  {
+    "value": "MoonBit"
+  },
+  {
+    "value": "MoonScript"
+  },
+  {
+    "value": "Motoko"
+  },
+  {
+    "value": "Motorola 68K Assembly"
+  },
+  {
+    "value": "Move"
+  },
+  {
+    "value": "Mustache"
+  },
+  {
+    "value": "NCL"
+  },
+  {
+    "value": "NMODL"
+  },
+  {
+    "value": "NPM Config"
+  },
+  {
+    "value": "NWScript"
+  },
+  {
+    "value": "Nasal"
+  },
+  {
+    "value": "Nearley"
+  },
+  {
+    "value": "Nemerle"
+  },
+  {
+    "value": "NetLinx"
+  },
+  {
+    "value": "NetLinx+ERB"
+  },
+  {
+    "value": "NetLogo"
+  },
+  {
+    "value": "NewLisp"
+  },
+  {
+    "value": "Nextflow"
+  },
+  {
+    "value": "Nginx"
+  },
+  {
+    "value": "Nim"
+  },
+  {
+    "value": "Nit"
+  },
+  {
+    "value": "Nix"
+  },
+  {
+    "value": "Noir"
+  },
+  {
+    "value": "Nu"
+  },
+  {
+    "value": "NumPy"
+  },
+  {
+    "value": "Nunjucks"
+  },
+  {
+    "value": "Nushell"
+  },
+  {
+    "value": "OASv2-json"
+  },
+  {
+    "value": "OASv2-yaml"
+  },
+  {
+    "value": "OASv3-json"
+  },
+  {
+    "value": "OASv3-yaml"
+  },
+  {
+    "value": "OCaml"
+  },
+  {
+    "value": "OMNeT++ MSG"
+  },
+  {
+    "value": "OMNeT++ NED"
+  },
+  {
+    "value": "ObjectScript"
+  },
+  {
+    "value": "Objective-C"
+  },
+  {
+    "value": "Objective-C++"
+  },
+  {
+    "value": "Objective-J"
+  },
+  {
+    "value": "Odin"
+  },
+  {
+    "value": "Omgrofl"
+  },
+  {
+    "value": "Opal"
+  },
+  {
+    "value": "Open Policy Agent"
+  },
+  {
+    "value": "OpenAPI Specification v2"
+  },
+  {
+    "value": "OpenAPI Specification v3"
+  },
+  {
+    "value": "OpenCL"
+  },
+  {
+    "value": "OpenEdge ABL"
+  },
+  {
+    "value": "OpenQASM"
+  },
+  {
+    "value": "OpenSCAD"
+  },
+  {
+    "value": "Option List"
+  },
+  {
+    "value": "Org"
+  },
+  {
+    "value": "OverpassQL"
+  },
+  {
+    "value": "Oxygene"
+  },
+  {
+    "value": "Oz"
+  },
+  {
+    "value": "P4"
+  },
+  {
+    "value": "PDDL"
+  },
+  {
+    "value": "PEG.js"
+  },
+  {
+    "value": "PHP"
+  },
+  {
+    "value": "PLSQL"
+  },
+  {
+    "value": "PLpgSQL"
+  },
+  {
+    "value": "POV-Ray SDL"
+  },
+  {
+    "value": "Pact"
+  },
+  {
+    "value": "Pan"
+  },
+  {
+    "value": "Papyrus"
+  },
+  {
+    "value": "Parrot"
+  },
+  {
+    "value": "Pascal"
+  },
+  {
+    "value": "Pawn"
+  },
+  {
+    "value": "Pep8"
+  },
+  {
+    "value": "Perl"
+  },
+  {
+    "value": "PicoLisp"
+  },
+  {
+    "value": "PigLatin"
+  },
+  {
+    "value": "Pike"
+  },
+  {
+    "value": "Pip Requirements"
+  },
+  {
+    "value": "Pkl"
+  },
+  {
+    "value": "PlantUML"
+  },
+  {
+    "value": "PogoScript"
+  },
+  {
+    "value": "Polar"
+  },
+  {
+    "value": "Portugol"
+  },
+  {
+    "value": "PostCSS"
+  },
+  {
+    "value": "PostScript"
+  },
+  {
+    "value": "PowerBuilder"
+  },
+  {
+    "value": "PowerShell"
+  },
+  {
+    "value": "Praat"
+  },
+  {
+    "value": "Prisma"
+  },
+  {
+    "value": "Processing"
+  },
+  {
+    "value": "Procfile"
+  },
+  {
+    "value": "Prolog"
+  },
+  {
+    "value": "Promela"
+  },
+  {
+    "value": "Propeller Spin"
+  },
+  {
+    "value": "Pug"
+  },
+  {
+    "value": "Puppet"
+  },
+  {
+    "value": "PureBasic"
+  },
+  {
+    "value": "PureScript"
+  },
+  {
+    "value": "Pyret"
+  },
+  {
+    "value": "Python"
+  },
+  {
+    "value": "Python console"
+  },
+  {
+    "value": "Python traceback"
+  },
+  {
+    "value": "Q#"
+  },
+  {
+    "value": "QML"
+  },
+  {
+    "value": "Qt Script"
+  },
+  {
+    "value": "Quake"
+  },
+  {
+    "value": "QuickBASIC"
+  },
+  {
+    "value": "R"
+  },
+  {
+    "value": "RAML"
+  },
+  {
+    "value": "RBS"
+  },
+  {
+    "value": "RDoc"
+  },
+  {
+    "value": "REXX"
+  },
+  {
+    "value": "RMarkdown"
+  },
+  {
+    "value": "RON"
+  },
+  {
+    "value": "RPGLE"
+  },
+  {
+    "value": "RUNOFF"
+  },
+  {
+    "value": "Racket"
+  },
+  {
+    "value": "Ragel"
+  },
+  {
+    "value": "Raku"
+  },
+  {
+    "value": "Rascal"
+  },
+  {
+    "value": "ReScript"
+  },
+  {
+    "value": "Reason"
+  },
+  {
+    "value": "ReasonLIGO"
+  },
+  {
+    "value": "Rebol"
+  },
+  {
+    "value": "Record Jar"
+  },
+  {
+    "value": "Red"
+  },
+  {
+    "value": "Regular Expression"
+  },
+  {
+    "value": "Ren'Py"
+  },
+  {
+    "value": "Rez"
+  },
+  {
+    "value": "Ring"
+  },
+  {
+    "value": "Riot"
+  },
+  {
+    "value": "RobotFramework"
+  },
+  {
+    "value": "Roc"
+  },
+  {
+    "value": "Rocq Prover"
+  },
+  {
+    "value": "Roff"
+  },
+  {
+    "value": "Roff Manpage"
+  },
+  {
+    "value": "Rouge"
+  },
+  {
+    "value": "RouterOS Script"
+  },
+  {
+    "value": "Ruby"
+  },
+  {
+    "value": "Rust"
+  },
+  {
+    "value": "SAS"
+  },
+  {
+    "value": "SCSS"
+  },
+  {
+    "value": "SPARQL"
+  },
+  {
+    "value": "SQF"
+  },
+  {
+    "value": "SQL"
+  },
+  {
+    "value": "SQLPL"
+  },
+  {
+    "value": "SRecode Template"
+  },
+  {
+    "value": "STL"
+  },
+  {
+    "value": "SVG"
+  },
+  {
+    "value": "Sail"
+  },
+  {
+    "value": "SaltStack"
+  },
+  {
+    "value": "Sass"
+  },
+  {
+    "value": "Scala"
+  },
+  {
+    "value": "Scaml"
+  },
+  {
+    "value": "Scenic"
+  },
+  {
+    "value": "Scheme"
+  },
+  {
+    "value": "Scilab"
+  },
+  {
+    "value": "Self"
+  },
+  {
+    "value": "ShaderLab"
+  },
+  {
+    "value": "Shell"
+  },
+  {
+    "value": "ShellCheck Config"
+  },
+  {
+    "value": "Shen"
+  },
+  {
+    "value": "Simple File Verification"
+  },
+  {
+    "value": "Singularity"
+  },
+  {
+    "value": "Slang"
+  },
+  {
+    "value": "Slash"
+  },
+  {
+    "value": "Slice"
+  },
+  {
+    "value": "Slim"
+  },
+  {
+    "value": "Slint"
+  },
+  {
+    "value": "SmPL"
+  },
+  {
+    "value": "Smalltalk"
+  },
+  {
+    "value": "Smarty"
+  },
+  {
+    "value": "Smithy"
+  },
+  {
+    "value": "Snakemake"
+  },
+  {
+    "value": "Solidity"
+  },
+  {
+    "value": "SourcePawn"
+  },
+  {
+    "value": "Squirrel"
+  },
+  {
+    "value": "Stan"
+  },
+  {
+    "value": "Standard ML"
+  },
+  {
+    "value": "Starlark"
+  },
+  {
+    "value": "Stata"
+  },
+  {
+    "value": "StringTemplate"
+  },
+  {
+    "value": "Stylus"
+  },
+  {
+    "value": "SubRip Text"
+  },
+  {
+    "value": "SugarSS"
+  },
+  {
+    "value": "SuperCollider"
+  },
+  {
+    "value": "Survex data"
+  },
+  {
+    "value": "Svelte"
+  },
+  {
+    "value": "Sway"
+  },
+  {
+    "value": "Sweave"
+  },
+  {
+    "value": "Swift"
+  },
+  {
+    "value": "SystemVerilog"
+  },
+  {
+    "value": "TI Program"
+  },
+  {
+    "value": "TL-Verilog"
+  },
+  {
+    "value": "TLA"
+  },
+  {
+    "value": "TOML"
+  },
+  {
+    "value": "TSQL"
+  },
+  {
+    "value": "TSV"
+  },
+  {
+    "value": "TSX"
+  },
+  {
+    "value": "TXL"
+  },
+  {
+    "value": "Tact"
+  },
+  {
+    "value": "Talon"
+  },
+  {
+    "value": "Tcl"
+  },
+  {
+    "value": "TeX"
+  },
+  {
+    "value": "Terra"
+  },
+  {
+    "value": "Terraform Template"
+  },
+  {
+    "value": "TextGrid"
+  },
+  {
+    "value": "TextMate Properties"
+  },
+  {
+    "value": "Textile"
+  },
+  {
+    "value": "Thrift"
+  },
+  {
+    "value": "Toit"
+  },
+  {
+    "value": "Tree-sitter Query"
+  },
+  {
+    "value": "Turing"
+  },
+  {
+    "value": "Twig"
+  },
+  {
+    "value": "TypeScript"
+  },
+  {
+    "value": "TypeSpec"
+  },
+  {
+    "value": "Typst"
+  },
+  {
+    "value": "Unified Parallel C"
+  },
+  {
+    "value": "Unity3D Asset"
+  },
+  {
+    "value": "Uno"
+  },
+  {
+    "value": "UnrealScript"
+  },
+  {
+    "value": "UrWeb"
+  },
+  {
+    "value": "V"
+  },
+  {
+    "value": "VBA"
+  },
+  {
+    "value": "VBScript"
+  },
+  {
+    "value": "VCL"
+  },
+  {
+    "value": "VHDL"
+  },
+  {
+    "value": "Vala"
+  },
+  {
+    "value": "Valve Data Format"
+  },
+  {
+    "value": "Velocity Template Language"
+  },
+  {
+    "value": "Verilog"
+  },
+  {
+    "value": "Vim Help File"
+  },
+  {
+    "value": "Vim Script"
+  },
+  {
+    "value": "Vim Snippet"
+  },
+  {
+    "value": "Visual Basic .NET"
+  },
+  {
+    "value": "Visual Basic 6.0"
+  },
+  {
+    "value": "Volt"
+  },
+  {
+    "value": "Vue"
+  },
+  {
+    "value": "Vyper"
+  },
+  {
+    "value": "WDL"
+  },
+  {
+    "value": "WGSL"
+  },
+  {
+    "value": "Web Ontology Language"
+  },
+  {
+    "value": "WebAssembly"
+  },
+  {
+    "value": "WebAssembly Interface Type"
+  },
+  {
+    "value": "Whiley"
+  },
+  {
+    "value": "Wikitext"
+  },
+  {
+    "value": "Windows Registry Entries"
+  },
+  {
+    "value": "Witcher Script"
+  },
+  {
+    "value": "Wollok"
+  },
+  {
+    "value": "World of Warcraft Addon Data"
+  },
+  {
+    "value": "Wren"
+  },
+  {
+    "value": "X10"
+  },
+  {
+    "value": "XC"
+  },
+  {
+    "value": "XML"
+  },
+  {
+    "value": "XML Property List"
+  },
+  {
+    "value": "XQuery"
+  },
+  {
+    "value": "XSLT"
+  },
+  {
+    "value": "Xmake"
+  },
+  {
+    "value": "Xojo"
+  },
+  {
+    "value": "Xonsh"
+  },
+  {
+    "value": "Xtend"
+  },
+  {
+    "value": "YAML"
+  },
+  {
+    "value": "YARA"
+  },
+  {
+    "value": "YASnippet"
+  },
+  {
+    "value": "Yacc"
+  },
+  {
+    "value": "Yul"
+  },
+  {
+    "value": "ZAP"
+  },
+  {
+    "value": "ZIL"
+  },
+  {
+    "value": "ZenScript"
+  },
+  {
+    "value": "Zephir"
+  },
+  {
+    "value": "Zig"
+  },
+  {
+    "value": "Zimpl"
+  },
+  {
+    "value": "crontab"
+  },
+  {
+    "value": "eC"
+  },
+  {
+    "value": "fish"
+  },
+  {
+    "value": "hoon"
+  },
+  {
+    "value": "iCalendar"
+  },
+  {
+    "value": "jq"
+  },
+  {
+    "value": "kvlang"
+  },
+  {
+    "value": "mIRC Script"
+  },
+  {
+    "value": "mcfunction"
+  },
+  {
+    "value": "mdsvex"
+  },
+  {
+    "value": "mupad"
+  },
+  {
+    "value": "nanorc"
+  },
+  {
+    "value": "nesC"
+  },
+  {
+    "value": "ooc"
+  },
+  {
+    "value": "q"
+  },
+  {
+    "value": "reStructuredText"
+  },
+  {
+    "value": "sed"
+  },
+  {
+    "value": "templ"
+  },
+  {
+    "value": "vCard"
+  },
+  {
+    "value": "wisp"
+  },
+  {
+    "value": "xBase"
+  },
+  {
+    "value": "Other"
+  }
+]

@@ -111,7 +111,7 @@ export type ProjectPaginationParams = PaginationParams & {
 
 export type ProjectSearchParams = {
   keyword?: string
-  programming_language?: string
+  programming_language?: string | null
   license?: string
   platform?: Platform
   is_featured?: boolean

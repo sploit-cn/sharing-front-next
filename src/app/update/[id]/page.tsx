@@ -370,6 +370,7 @@ const ProjectUpdatePage: React.FC = () => {
               brief: projectDetail?.brief || '',
               description: projectDetail?.description || '',
               codeExample: projectDetail?.code_example || '',
+              tagIds: projectDetail?.tags.map((tag) => tag.id) || [],
             }}
             // initialValues={{
             //   brief: projectDetail.brief,

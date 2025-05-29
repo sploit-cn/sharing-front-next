@@ -29,6 +29,9 @@ import {
 } from '@/types'
 import ProjectList from '@/components/ProjectList'
 import { HomeOutlined } from '@ant-design/icons'
+import langs from '@/lib/languages.json'
+import licenses from '@/lib/licenses.json'
+import { App } from 'antd'
 
 const { Option } = Select
 
@@ -59,6 +62,8 @@ const AdvancedSearchPage = () => {
   const [searchedProjectIds, setSearchedProjectIds] = useState<number[] | null>(
     null,
   )
+
+  const { message } = App.useApp()
 
   const formChanged = useRef(true)
 
@@ -94,10 +99,10 @@ const AdvancedSearchPage = () => {
           const data = await res.json()
           setAllTags(data.data || [])
         } else {
-          console.error('获取标签列表失败')
+          message.error('获取标签列表失败')
         }
       } catch (error) {
-        console.error('获取标签列表失败:', error)
+        message.error('获取标签列表失败: ' + error)
       }
     }
     fetchTags()
@@ -118,7 +123,6 @@ const AdvancedSearchPage = () => {
         is_featured: formValues.isFeatured,
         tags: formValues.selectedTags || [],
       }
-
       let projectIdsToFetch = searchedProjectIds
       try {
         if (formChanged.current) {
@@ -141,7 +145,7 @@ const AdvancedSearchPage = () => {
           )
 
           if (!searchRes.ok) {
-            console.error('搜索项目失败')
+            message.error('搜索项目失败')
             setSearchResults([])
             setTotalItems(0)
             setSearchedProjectIds([])
@@ -191,12 +195,12 @@ const AdvancedSearchPage = () => {
           setSearchResults(projectsData.data.items || [])
           setTotalItems(projectsData.data.total || 0)
         } else {
-          console.error('获取项目信息失败')
+          message.error('获取项目信息失败')
           setSearchResults([])
           setTotalItems(0)
         }
       } catch (error) {
-        console.error('搜索项目信息失败', error)
+        message.error('搜索项目信息失败' + error)
         setSearchResults([])
         setTotalItems(0)
       } finally {
@@ -302,18 +306,30 @@ const AdvancedSearchPage = () => {
 
             <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item name="programmingLanguage" label="编程语言">
-                <Input
+                {/* <Input
                   placeholder="例如：Python, JavaScript"
                   onChange={handleFieldChange}
+                /> */}
+                <Select
+                  showSearch
+                  placeholder="例如：Python, JavaScript"
+                  onChange={handleFieldChange}
+                  options={langs}
                 />
               </Form.Item>
             </Col>
 
             <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item name="license" label="许可证">
-                <Input
+                {/* <Input
                   placeholder="例如：MIT, Apache-2.0"
                   onChange={handleFieldChange}
+                /> */}
+                <Select
+                  showSearch
+                  placeholder="例如：MIT, Apache-2.0"
+                  onChange={handleFieldChange}
+                  options={licenses}
                 />
               </Form.Item>
             </Col>
