@@ -45,6 +45,7 @@ import {
 } from '@/types'
 import { useHydrated } from '@/utils/useHydrated'
 import { formatNumber } from '@/utils/numbers'
+import Image from 'next/image'
 const { TextArea } = Input
 const { Title, Text, Paragraph } = Typography
 const { Option } = Select
@@ -342,10 +343,33 @@ const ProjectSubmitPage: React.FC = () => {
             {repoDetail && (
               <Card className="mb-4!">
                 <div className="flex items-center gap-4">
-                  <img
+                  <Image
                     src={repoDetail.avatar || '/placeholder.svg'}
                     alt={repoDetail.name}
-                    className="h-16 w-16 rounded-lg"
+                    width={64} // Set the intrinsic width in pixels
+                    height={64} // Set the intrinsic height in pixels
+                    className="rounded-lg object-cover" // Apply remaining Tailwind classes. h-16 w-16 are now managed by width/height props.
+                    // Add 'priority' if this image is above the fold and crucial for LCP
+                    // priority={true}
+
+                    // IMPORTANT: If `repoDetail.avatar` can be an external URL (e.g., from GitHub,
+                    // like 'https://avatars.githubusercontent.com/...'), you MUST configure
+                    // its domain in your `next.config.js` file:
+                    //
+                    // module.exports = {
+                    //   images: {
+                    //     domains: ['avatars.githubusercontent.com', 'your-other-cdn.com'],
+                    //     // OR (recommended for more complex patterns)
+                    //     // remotePatterns: [
+                    //     //   {
+                    //     //     protocol: 'https',
+                    //     //     hostname: 'avatars.githubusercontent.com',
+                    //     //     port: '',
+                    //     //     pathname: '/**',
+                    //     //   },
+                    //     // ],
+                    //   },
+                    // };
                   />
                   <div className="flex-1">
                     <Title level={4} className="mb-1">
@@ -488,11 +512,19 @@ const ProjectSubmitPage: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                     {uploadedImages.map((image) => (
                       <div key={image.id} className="group relative">
-                        <img
-                          src={`/static/images/${image.file_name}`}
-                          alt={image.original_name}
-                          className="border-bgactive h-24 w-full rounded-lg border object-cover"
-                        />
+                        <div className="relative h-24 w-full">
+                          {' '}
+                          {/* Parent container with defined dimensions and relative positioning */}
+                          <Image
+                            src={`/static/images/${image.file_name}`}
+                            alt={image.original_name}
+                            fill // Makes the image fill the parent container
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Crucial for responsive images; tells Next.js how wide the image will be at different breakpoints
+                            className="border-bgactive rounded-lg border object-cover" // Apply remaining Tailwind classes. h-24 w-full are now managed by the parent div.
+                            // Add 'priority' if this image is above the fold and crucial for LCP
+                            // priority={true}
+                          />
+                        </div>
                         <Button
                           type="text"
                           danger

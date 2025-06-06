@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Card,
   Table,
@@ -56,11 +56,8 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
   const [passwordForm] = Form.useForm<AdminUpdatePassword>()
   const [notifyForm] = Form.useForm<{ content: string }>()
 
-  useEffect(() => {
-    fetchUsers()
-  }, [])
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
       const response = await ky
@@ -76,7 +73,11 @@ const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [message])
+
+  useEffect(() => {
+    fetchUsers()
+  },[fetchUsers])
 
   const handleEditUser = (user: UserResponse) => {
     setSelectedUser(user)

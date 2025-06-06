@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { App, Button, Card, Flex, Form, Input } from 'antd'
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons'
 import Password from 'antd/es/input/Password'
@@ -18,13 +18,13 @@ type OAuthRegisterForm = {
 export default function OAuthRegisterPage() {
   const [form] = Form.useForm<OAuthRegisterForm>()
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { message } = App.useApp()
   const login = useUserStore((state) => state.login)
   const [loading, setLoading] = useState(false)
   const [allowEmail, setAllowEmail] = useState(true)
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
     const email = searchParams.get('email')
     const token = searchParams.get('token')
 
@@ -38,9 +38,10 @@ export default function OAuthRegisterPage() {
       form.setFieldsValue({ email })
       setAllowEmail(false)
     }
-  }, [searchParams, router, message, form])
+  }, [router, message, form, allowEmail])
 
   async function handleRegister(values: OAuthRegisterForm) {
+    const searchParams = new URLSearchParams(window.location.search)
     const token = searchParams.get('token')
     if (!token) {
       message.error('缺少OAuth认证信息')

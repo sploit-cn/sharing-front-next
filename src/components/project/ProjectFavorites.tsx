@@ -45,7 +45,7 @@ const ProjectFavorites: React.FC<ProjectFavoritesProps> = ({
     } finally {
       setLoading(false)
     }
-  }, [projectId])
+  }, [projectId, message])
 
   // 计算当前用户是否已收藏（基于 favorites 数组）
   useEffect(() => {

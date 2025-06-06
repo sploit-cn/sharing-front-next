@@ -5,7 +5,7 @@ import { getBaseUrl } from '@/utils/urls' // Assuming getBaseUrl is still needed
 import ProjectsClientRenderer from '@/components/ProjectsClientRenderer'
 
 // Client-side component for rendering the list and handling infinite scroll
-
+// export const dynamic = 'force-dynamic'
 // Server component for initial data fetching and rendering ProjectsClientRenderer
 const HomePage = async () => {
   let initialProjects: ProjectBaseResponse[] = []
@@ -15,8 +15,13 @@ const HomePage = async () => {
   try {
     // Fetch the first page of projects on the server
     const response = await fetch(
-      `${getBaseUrl()}/api/projects?page=1&page_size=5&order_by=updated_at&order=desc`,
-      { cache: 'no-store' },
+      `${getBaseUrl()}/api/projects?page=1&page_size=10&order_by=updated_at&order=desc`,
+      // { cache: 'no-store' },
+      {
+        next: {
+          revalidate: 60,
+        },
+      },
     )
     if (!response.ok) {
       throw new Error('Failed to fetch initial projects')

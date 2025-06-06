@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import { Card, List, Avatar, Button, Typography, Spin, Empty } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Card, List, Avatar, Typography, Spin, Empty } from 'antd'
 import {
   StarOutlined,
   SafetyCertificateOutlined,
@@ -16,15 +16,11 @@ const { Text } = Typography
 
 interface RelatedProjectsProps {
   projectId: number
-  tags?: Array<{ id: number; name: string }>
-  programmingLanguage?: string
   limit?: number
 }
 
 const RelatedProjects: React.FC<RelatedProjectsProps> = ({
   projectId,
-  tags = [],
-  programmingLanguage,
   limit = 6,
 }) => {
   const [relatedProjects, setRelatedProjects] = useState<
@@ -33,53 +29,52 @@ const RelatedProjects: React.FC<RelatedProjectsProps> = ({
   const [loading, setLoading] = useState(false)
   const { message } = App.useApp()
 
-  const fetchRelatedProjects = useCallback(async () => {
-    setLoading(true)
-    try {
-      // 获取项目详情
-      const searchParams = new URLSearchParams({
-        project_id: projectId.toString(),
-      })
-      const projectsResponse = await ky
-        .get(`/api/projects/related?${searchParams.toString()}`)
-        .json<{
-          data: ProjectRelatedResponse[]
-        }>()
-      setRelatedProjects(projectsResponse.data)
-    } catch (error) {
-      console.error('获取相关项目失败:', error)
-      // 如果搜索失败，获取热门项目作为推荐
-      try {
-        const fallbackResponse = await ky
-          .get(
-            `/api/projects?${new URLSearchParams({
-              page: '1',
-              page_size: limit.toString(),
-              order_by: 'stars',
-              order: 'desc',
-            }).toString()}`,
-          )
-          .json<{
-            data: {
-              items: ProjectRelatedResponse[]
-            }
-          }>()
-
-        const fallbackProjects = fallbackResponse.data.items.filter(
-          (p) => p.id !== projectId,
-        )
-        setRelatedProjects(fallbackProjects.slice(0, limit))
-      } catch {
-        message.error('获取推荐项目失败')
-      }
-    } finally {
-      setLoading(false)
-    }
-  }, [projectId, tags, programmingLanguage, limit])
-
   useEffect(() => {
+    const fetchRelatedProjects = async () => {
+      setLoading(true)
+      try {
+        // 获取项目详情
+        const searchParams = new URLSearchParams({
+          project_id: projectId.toString(),
+        })
+        const projectsResponse = await ky
+          .get(`/api/projects/related?${searchParams.toString()}`)
+          .json<{
+            data: ProjectRelatedResponse[]
+          }>()
+        setRelatedProjects(projectsResponse.data)
+      } catch (error) {
+        console.error('获取相关项目失败:', error)
+        // 如果搜索失败，获取热门项目作为推荐
+        try {
+          const fallbackResponse = await ky
+            .get(
+              `/api/projects?${new URLSearchParams({
+                page: '1',
+                page_size: limit.toString(),
+                order_by: 'stars',
+                order: 'desc',
+              }).toString()}`,
+            )
+            .json<{
+              data: {
+                items: ProjectRelatedResponse[]
+              }
+            }>()
+
+          const fallbackProjects = fallbackResponse.data.items.filter(
+            (p) => p.id !== projectId,
+          )
+          setRelatedProjects(fallbackProjects.slice(0, limit))
+        } catch {
+          message.error('获取推荐项目失败')
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchRelatedProjects()
-  }, [projectId, fetchRelatedProjects])
+  }, [limit, message, projectId])
 
   return (
     <Card

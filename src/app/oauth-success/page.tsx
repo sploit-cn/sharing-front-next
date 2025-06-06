@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { App, Spin, Card, Flex } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 import useUserStore from '@/store/userStore'
@@ -9,12 +9,12 @@ import ky from 'ky'
 
 export default function OAuthSuccessPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { message } = App.useApp()
   const login = useUserStore((state) => state.login)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
     const token = searchParams.get('token')
 
     if (token) {
@@ -57,7 +57,7 @@ export default function OAuthSuccessPage() {
       message.error('登录失败，缺少认证信息')
       router.push('/login')
     }
-  }, [searchParams, router, message, login])
+  }, [router, message, login])
 
   return (
     <div className="flex min-h-screen items-center justify-center">

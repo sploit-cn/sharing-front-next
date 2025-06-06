@@ -508,11 +508,7 @@ export default async function Page({
               </div>
 
               {/* 相关项目推荐 */}
-              <RelatedProjects
-                projectId={project.id}
-                tags={project.tags}
-                programmingLanguage={project.programming_language}
-              />
+              <RelatedProjects projectId={project.id} />
             </Space>
           </Col>
         </Row>

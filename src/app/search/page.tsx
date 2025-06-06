@@ -106,11 +106,11 @@ const AdvancedSearchPage = () => {
       }
     }
     fetchTags()
-  }, [])
+  },[message])
 
   // 核心搜索函数
   const handleSearch = useCallback(
-    async (formValues: SearchFormValues, page = 1, pSize = pageSize) => {
+    async (formValues: SearchFormValues, page = 1, pSize = pageSize,searchedProjectIds:number[] | null=[]) => {
       setLoading(true)
       setCurrentPage(page)
       setPageSize(pSize)
@@ -207,7 +207,7 @@ const AdvancedSearchPage = () => {
         setLoading(false)
       }
     },
-    [pageSize, searchedProjectIds],
+    [pageSize, message],
   )
 
   // 初始化表单默认值和 URL 参数处理
@@ -230,24 +230,25 @@ const AdvancedSearchPage = () => {
         handleSearch(initialValues, 1, pageSize)
       }, 0)
     }
-  }, [])
+    console.log([form, handleSearch, pageSize])
+  },[form, handleSearch, pageSize])
 
   // 表单提交处理
   const onFinishSearch = useCallback(
     (values: SearchFormValues) => {
       // setSearchedProjectIds(null)
-      handleSearch(values, 1, pageSize)
+      handleSearch(values, 1, pageSize, searchedProjectIds)
     },
-    [handleSearch, pageSize],
+    [handleSearch, pageSize,searchedProjectIds],
   )
 
   // 分页处理
   const handleTableChange = useCallback(
     (newPage: number, newPageSize?: number) => {
       const currentValues = form.getFieldsValue()
-      handleSearch(currentValues, newPage, newPageSize || pageSize)
+      handleSearch(currentValues, newPage, newPageSize || pageSize, searchedProjectIds)
     },
-    [form, handleSearch, pageSize],
+    [form, handleSearch, pageSize, searchedProjectIds],
   )
 
   const handleFieldChange = useCallback(() => {
